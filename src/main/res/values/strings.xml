@@ -3,5 +3,9 @@
 
     <string name="app_name">ClasseurCom</string>
     <string name="action_reset">Remise à zero</string>
+    <string name="list_en_cours">Phrase en cours</string>
+    <string name="message_dialog">Voulez vous vraiment retirer cet objet ?</string>
+    <string name="yes">Oui</string>
+    <string name="no">Non</string>
 
 </resources>

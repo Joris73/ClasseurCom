@@ -1,6 +1,8 @@
 package com.joris.classeurcom;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,24 +22,71 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_list);
 
-        ArrayList<Item> listItem = new ArrayList<Item>();
-        listItem.add(new Item("Artichauts", "artichauts"));
-        listItem.add(new Item("Asperge", "asperge"));
-        listItem.add(new Item("Avocats", "avocats"));
-        listItem.add(new Item("Betteraves", "betteraves"));
-        listItem.add(new Item("Carrottes", "carrottes"));
-        listItem.add(new Item("Celeri rave", "celeri_rave"));
-        listItem.add(new Item("Chou rouge", "chou_rouge"));
-        listItem.add(new Item("Courgettes", "courgettes"));
-        listItem.add(new Item("Endives", "endives"));
-        listItem.add(new Item("Maïs", "mais"));
-        listItem.add(new Item("Radis", "radis"));
-        listItem.add(new Item("Salade", "salade"));
-        listItem.add(new Item("Tomates", "tomates"));
-
         listeCategorie.clear();
-        listeCategorie.add(new Categorie("Legumes", "legumes", listItem));
-        listeCategorie.add(new Categorie("Transport", "transport", listItem));
+
+        ArrayList<Item> listcereales = new ArrayList<Item>();
+        listeCategorie.add(new Categorie("Cereales", "_cereales", listcereales));
+        listcereales.add(new Item("Ble", "ble"));
+        listcereales.add(new Item("Lentilles", "lentilles"));
+        listcereales.add(new Item("Mais", "mais"));
+        listcereales.add(new Item("Pain", "pain"));
+        listcereales.add(new Item("Pates", "pates"));
+        listcereales.add(new Item("Pois chiche", "pois_chiche"));
+        listcereales.add(new Item("Riz", "riz"));
+        listcereales.add(new Item("Semoule", "semoule"));
+        listcereales.add(new Item("Compote", "compote"));
+        listcereales.add(new Item("Confiture", "confiture"));
+        listcereales.add(new Item("Fromage blanc", "fromage_blanc"));
+        listcereales.add(new Item("Yahourt", "yahourt"));
+
+        ArrayList<Item> listlegumes = new ArrayList<Item>();
+        listeCategorie.add(new Categorie("Legumes", "_legumes", listlegumes));
+        listlegumes.add(new Item("Ail", "ail"));
+        listlegumes.add(new Item("Artichauts", "artichauts"));
+        listlegumes.add(new Item("Asperge", "asperge"));
+        listlegumes.add(new Item("Avocats", "avocats"));
+        listlegumes.add(new Item("Betteraves", "betteraves"));
+        listlegumes.add(new Item("Blette", "blette"));
+        listlegumes.add(new Item("Brocoli", "brocoli"));
+        listlegumes.add(new Item("Carrottes", "carrottes"));
+        listlegumes.add(new Item("Celeri rave", "celeri_rave"));
+        listlegumes.add(new Item("Chou", "chou"));
+        listlegumes.add(new Item("Choux de bruxelles", "choux_de_bruxelles"));
+        listlegumes.add(new Item("Chou fleur", "chou_fleur"));
+        listlegumes.add(new Item("Chou rouge", "chou_rouge"));
+        listlegumes.add(new Item("Cornichon", "cornichon"));
+        listlegumes.add(new Item("Courge", "courge"));
+        listlegumes.add(new Item("Courgettes", "courgettes"));
+        listlegumes.add(new Item("Echalote", "echalote"));
+        listlegumes.add(new Item("Endives", "endives"));
+        listlegumes.add(new Item("Epinards", "epinards"));
+        listlegumes.add(new Item("Fenouil", "fenouil"));
+        listlegumes.add(new Item("Haricots", "haricots"));
+        listlegumes.add(new Item("Oignon", "oignon"));
+        listlegumes.add(new Item("Petit pois", "petit_pois"));
+        listlegumes.add(new Item("Poireau", "poireau"));
+        listlegumes.add(new Item("Pommes de terre", "pommes_de_terre"));
+        listlegumes.add(new Item("Radis", "radis"));
+        listlegumes.add(new Item("Salade", "salade"));
+        listlegumes.add(new Item("Salsifis", "salsifis"));
+        listlegumes.add(new Item("Tomates", "tomates"));
+
+        ArrayList<Item> listplatsprepares = new ArrayList<Item>();
+        listeCategorie.add(new Categorie("Plats prepares", "_plats_prepares", listplatsprepares));
+        listplatsprepares.add(new Item("Frites", "frites"));
+        listplatsprepares.add(new Item("Pizza", "pizza"));
+        listplatsprepares.add(new Item("Quiche", "quiche"));
+        listplatsprepares.add(new Item("Soupe", "soupe"));
+
+        ArrayList<Item> listproduitsdorigineanimale = new ArrayList<Item>();
+        listeCategorie.add(new Categorie("Produits d'origine animale", "_produits_dorigine_animale", listproduitsdorigineanimale));
+        listproduitsdorigineanimale.add(new Item("Charcuterie", "charcuterie"));
+        listproduitsdorigineanimale.add(new Item("Fruits de mer", "fruits_de_mer"));
+        listproduitsdorigineanimale.add(new Item("Lait", "lait"));
+        listproduitsdorigineanimale.add(new Item("Miel", "miel"));
+        listproduitsdorigineanimale.add(new Item("Oeufs", "oeufs"));
+        listproduitsdorigineanimale.add(new Item("Poisson", "poisson"));
+        listproduitsdorigineanimale.add(new Item("Viande", "viande"));
 
         ItemListFragment fragment1 = new ItemListFragment(this);
         CategorieFragment fragment2 = new CategorieFragment(this);
@@ -62,9 +111,22 @@ public class MainActivity extends Activity {
     }
 
     public void dellItemChoisi(int pos) {
-        listeEnCours.remove(pos);
-        ItemListFragment mitemListFragment = (ItemListFragment) getFragmentManager().findFragmentByTag(FRAGMENT_TAG_LIST);
-        mitemListFragment.updateList();
+        final int poss = pos;
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(getString(R.string.message_dialog))
+                .setCancelable(true)
+                .setPositiveButton(getString(R.string.yes),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(final DialogInterface dialog,
+                                                final int id) {
+                                listeEnCours.remove(poss);
+                                ItemListFragment mitemListFragment = (ItemListFragment) getFragmentManager().findFragmentByTag(FRAGMENT_TAG_LIST);
+                                mitemListFragment.updateList();
+                            }
+                        })
+                .setNegativeButton(getString(R.string.no), null);
+        final AlertDialog alert = builder.create();
+        alert.show();
     }
 
     @Override
