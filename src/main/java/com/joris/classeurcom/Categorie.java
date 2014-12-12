@@ -26,6 +26,8 @@ public class Categorie {
     }
 
     public ArrayList<Item> getListItem() {
+        if (listItem == null)
+            listItem = new ArrayList<>();
         return listItem;
     }
 }

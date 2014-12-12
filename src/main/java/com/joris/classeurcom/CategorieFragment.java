@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.Toast;
 
 public class CategorieFragment extends Fragment {
     private MainActivity context;
@@ -38,14 +39,18 @@ public class CategorieFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> arg0, View v, int position,
                                     long arg3) {
-                ItemFragment fragment = new ItemFragment(context);
-                Bundle bundle = new Bundle();
-                bundle.putInt("id", position);
-                fragment.setArguments(bundle);
+                if (!MainActivity.listeCategorie.get(position).getListItem().isEmpty()) {
+                    ItemFragment fragment = new ItemFragment(context);
+                    Bundle bundle = new Bundle();
+                    bundle.putInt("id", position);
+                    fragment.setArguments(bundle);
 
-                getFragmentManager().beginTransaction()
-                        .replace(R.id.frame_item_detail_container, fragment)
-                        .commit();
+                    getFragmentManager().beginTransaction()
+                            .replace(R.id.frame_item_detail_container, fragment)
+                            .commit();
+                } else {
+                    Toast.makeText(getActivity(), getString(R.string.probleme_cat_vide), Toast.LENGTH_SHORT).show();
+                }
             }
         });
         return rootView;

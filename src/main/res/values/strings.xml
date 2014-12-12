@@ -3,9 +3,21 @@
 
     <string name="app_name">ClasseurCom</string>
     <string name="action_reset">Remise à zero</string>
+    <string name="action_add">Ajouter un élement</string>
     <string name="list_en_cours">Phrase en cours</string>
     <string name="message_dialog">Voulez vous vraiment retirer cet objet ?</string>
     <string name="yes">Oui</string>
     <string name="no">Non</string>
+    <string name="title_activity_add">AddActivity</string>
+    <string name="edit_name_item">Nom</string>
+    <string name="edit_image_item">Image</string>
+    <string name="bt_ajouter">Ajouter</string>
+    <string name="probleme_champs">Tous les champs n\'ont pas été remplis</string>
+    <string name="probleme_cat_vide">Catégorie vide</string>
+
+    <string-array name="type_item">
+        <item>Objet</item>
+        <item>Categorie</item>
+    </string-array>
 
 </resources>

@@ -3,6 +3,7 @@ package com.joris.classeurcom;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -110,23 +111,21 @@ public class MainActivity extends Activity {
         mitemListFragment.updateList();
     }
 
-    public void dellItemChoisi(int pos) {
-        final int poss = pos;
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+    public void dellItemChoisi(final int pos) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(getString(R.string.message_dialog))
                 .setCancelable(true)
                 .setPositiveButton(getString(R.string.yes),
                         new DialogInterface.OnClickListener() {
                             public void onClick(final DialogInterface dialog,
                                                 final int id) {
-                                listeEnCours.remove(poss);
+                                listeEnCours.remove(pos);
                                 ItemListFragment mitemListFragment = (ItemListFragment) getFragmentManager().findFragmentByTag(FRAGMENT_TAG_LIST);
                                 mitemListFragment.updateList();
                             }
                         })
                 .setNegativeButton(getString(R.string.no), null);
-        final AlertDialog alert = builder.create();
-        alert.show();
+        builder.create().show();
     }
 
     @Override
@@ -144,6 +143,10 @@ public class MainActivity extends Activity {
                 listeEnCours.clear();
                 ItemListFragment mitemListFragment = (ItemListFragment) getFragmentManager().findFragmentByTag(FRAGMENT_TAG_LIST);
                 mitemListFragment.updateList();
+                return true;
+            case R.id.action_add:
+                Intent intent = new Intent(getApplicationContext(), AddActivity.class);
+                startActivity(intent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
