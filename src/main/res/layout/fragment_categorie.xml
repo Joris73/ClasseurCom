@@ -9,6 +9,7 @@
         android:id="@+id/grid_view_principale"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:numColumns="auto_fit" />
+        android:numColumns="auto_fit"
+        android:stretchMode="columnWidth"     />
 
 </LinearLayout>

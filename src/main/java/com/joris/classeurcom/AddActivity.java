@@ -29,6 +29,9 @@ public class AddActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add);
+
+        final DatabaseHelper db = new DatabaseHelper(getApplicationContext());
+
         edit_nom = (EditText) findViewById(R.id.edit_nom);
         edit_image = (EditText) findViewById(R.id.edit_image);
         Button button_add = (Button) findViewById(R.id.bt_ajouter);
@@ -37,7 +40,7 @@ public class AddActivity extends Activity {
 
         ArrayAdapter<String> adapter;
         List<String> list;
-        list = new ArrayList<String>();
+        list = new ArrayList<>();
 
         for (Categorie cat : MainActivity.listeCategorie) {
             list.add(cat.getNom());
@@ -71,10 +74,10 @@ public class AddActivity extends Activity {
             public void onClick(View v) {
                 if (recupererValeurs()) {
                     if (isCategorie) {
-                        MainActivity.listeCategorie.add(new Categorie(nom, image, null));
+                        MainActivity.listeCategorie.add(db.createCategorie(nom, image));
                     } else {
                         Categorie categorie = MainActivity.listeCategorie.get(dropdownCat.getSelectedItemPosition());
-                        categorie.getListItem().add(new Item(nom, image));
+                        db.createItem(categorie, nom, image);
                     }
 
                     finish();
@@ -92,6 +95,8 @@ public class AddActivity extends Activity {
         });
 
         setFocusChange();
+
+        db.closeDB();
     }
 
     /**

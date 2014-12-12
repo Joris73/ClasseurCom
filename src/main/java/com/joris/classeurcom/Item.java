@@ -5,12 +5,18 @@ package com.joris.classeurcom;
  * Cool non ?
  */
 public class Item {
+    private long id;
     private String nom;
     private String image;
 
-    public Item(String nom, String image) {
+    public Item(long id, String nom, String image) {
+        this.id = id;
         this.nom = nom;
         this.image = image;
+    }
+
+    public long getId() {
+        return this.id;
     }
 
     public String getNom() {

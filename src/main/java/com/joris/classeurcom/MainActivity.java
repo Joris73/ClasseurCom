@@ -15,18 +15,25 @@ public class MainActivity extends Activity {
 
     private final static String FRAGMENT_TAG_LIST = "ItemListFragment_TAG";
 
-    static public ArrayList<Categorie> listeCategorie = new ArrayList<Categorie>();
-    static public ArrayList<Item> listeEnCours = new ArrayList<Item>();
+    static public ArrayList<Categorie> listeCategorie = new ArrayList<>();
+    static public ArrayList<Item> listeEnCours = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_list);
 
-        listeCategorie.clear();
+        DatabaseHelper db = new DatabaseHelper(getApplicationContext());
 
-        ArrayList<Item> listcereales = new ArrayList<Item>();
-        listeCategorie.add(new Categorie("Cereales", "_cereales", listcereales));
+        listeCategorie.clear();
+        listeCategorie = db.getAllCategorie();
+/*
+        ArrayList<Item> listcereales = new ArrayList<>();
+        Categorie categorie1 = db.createCategorie("Cereales", "_cereales");
+        listeCategorie.add(categorie1);
+        db.createItem(categorie1, "Ble", "ble");*/
+
+        /*
         listcereales.add(new Item("Ble", "ble"));
         listcereales.add(new Item("Lentilles", "lentilles"));
         listcereales.add(new Item("Mais", "mais"));
@@ -41,7 +48,7 @@ public class MainActivity extends Activity {
         listcereales.add(new Item("Yahourt", "yahourt"));
 
         ArrayList<Item> listlegumes = new ArrayList<Item>();
-        listeCategorie.add(new Categorie("Legumes", "_legumes", listlegumes));
+        listeCategorie.add(db.createCategorie("Legumes", "_legumes"));
         listlegumes.add(new Item("Ail", "ail"));
         listlegumes.add(new Item("Artichauts", "artichauts"));
         listlegumes.add(new Item("Asperge", "asperge"));
@@ -72,15 +79,15 @@ public class MainActivity extends Activity {
         listlegumes.add(new Item("Salsifis", "salsifis"));
         listlegumes.add(new Item("Tomates", "tomates"));
 
-        ArrayList<Item> listplatsprepares = new ArrayList<Item>();
-        listeCategorie.add(new Categorie("Plats prepares", "_plats_prepares", listplatsprepares));
+        ArrayList<Item> listplatsprepares = new ArrayList<>();
+        listeCategorie.add(db.createCategorie("Plats prepares", "_plats_prepares"));
         listplatsprepares.add(new Item("Frites", "frites"));
         listplatsprepares.add(new Item("Pizza", "pizza"));
         listplatsprepares.add(new Item("Quiche", "quiche"));
         listplatsprepares.add(new Item("Soupe", "soupe"));
 
-        ArrayList<Item> listproduitsdorigineanimale = new ArrayList<Item>();
-        listeCategorie.add(new Categorie("Produits d'origine animale", "_produits_dorigine_animale", listproduitsdorigineanimale));
+        ArrayList<Item> listproduitsdorigineanimale = new ArrayList<>();
+        listeCategorie.add(db.createCategorie("Produits d'origine animale", "_produits_dorigine_animale"));
         listproduitsdorigineanimale.add(new Item("Charcuterie", "charcuterie"));
         listproduitsdorigineanimale.add(new Item("Fruits de mer", "fruits_de_mer"));
         listproduitsdorigineanimale.add(new Item("Lait", "lait"));
@@ -89,12 +96,16 @@ public class MainActivity extends Activity {
         listproduitsdorigineanimale.add(new Item("Poisson", "poisson"));
         listproduitsdorigineanimale.add(new Item("Viande", "viande"));
 
+        */
+
         ItemListFragment fragment1 = new ItemListFragment(this);
         CategorieFragment fragment2 = new CategorieFragment(this);
         getFragmentManager().beginTransaction()
                 .replace(R.id.frame_item_list, fragment1, FRAGMENT_TAG_LIST)
                 .replace(R.id.frame_item_detail_container, fragment2)
                 .commit();
+
+        db.closeDB();
     }
 
     @Override
