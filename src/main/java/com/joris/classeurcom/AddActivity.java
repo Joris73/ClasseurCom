@@ -1,21 +1,34 @@
 package com.joris.classeurcom;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.ParcelFileDescriptor;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import java.io.FileDescriptor;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 
 public class AddActivity extends Activity {
+
+    private static final int SELECT_PICTURE = 1;
+
+    private String selectedImagePath;
 
     private EditText edit_nom;
     private EditText edit_image;
@@ -24,6 +37,7 @@ public class AddActivity extends Activity {
     private Spinner dropdownCat;
     private Spinner dropdownType;
     private boolean isCategorie = false;
+    private ImageView imagetttt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,8 +49,10 @@ public class AddActivity extends Activity {
         edit_nom = (EditText) findViewById(R.id.edit_nom);
         edit_image = (EditText) findViewById(R.id.edit_image);
         Button button_add = (Button) findViewById(R.id.bt_ajouter);
+        Button bt_image = (Button) findViewById(R.id.bt_path_image);
         dropdownType = (Spinner) findViewById(R.id.spinner_type);
         dropdownCat = (Spinner) findViewById(R.id.spinner_cat);
+        imagetttt = (ImageView) findViewById(R.id.image);
 
         ArrayAdapter<String> adapter;
         List<String> list;
@@ -81,22 +97,54 @@ public class AddActivity extends Activity {
                     }
 
                     finish();
-
-                    String SQLrequest = "SELECT * "
-                            + "FROM user U "
-                            + "JOIN usager US ON U.id_usager=US.id_usager "
-                            + "WHERE U.login_user = '" + nom + "' and pass_login_user = '" + image + "'";
-
-                    //new RequestTaskConnexion().execute(SQLrequest);
                 } else {
                     Toast.makeText(getApplicationContext(), getString(R.string.probleme_champs), Toast.LENGTH_SHORT).show();
                 }
             }
         });
 
+        bt_image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(intent,
+                        "Select Picture"), SELECT_PICTURE);
+            }
+        });
+
         setFocusChange();
 
         db.closeDB();
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+            if (requestCode == SELECT_PICTURE) {
+                Uri selectedImageUri = data.getData();
+                Log.wtf("1", selectedImageUri.toString());
+
+                selectedImagePath = selectedImageUri.getPath();
+                Log.wtf("2", selectedImagePath);
+                edit_image.setText(selectedImagePath);
+
+                try {
+                    imagetttt.setImageBitmap(getBitmapFromUri(selectedImageUri));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    private Bitmap getBitmapFromUri(Uri uri) throws IOException {
+        ParcelFileDescriptor parcelFileDescriptor =
+                getContentResolver().openFileDescriptor(uri, "r");
+        FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
+        Bitmap image = BitmapFactory.decodeFileDescriptor(fileDescriptor);
+        parcelFileDescriptor.close();
+        return image;
     }
 
     /**

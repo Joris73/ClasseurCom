@@ -165,7 +165,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (c != null) {
             if (c.moveToFirst()) {
                 do {
-                    Item item = new Item(c.getInt((c.getColumnIndex(KEY_ID_ITEM))),
+                    Item item = new Item(c.getLong((c.getColumnIndex(KEY_ID_ITEM))),
                             c.getString(c.getColumnIndex(KEY_NAME_ITEM)), c.getString(c.getColumnIndex(KEY_IMAGE_ITEM)));
 
                     listItem.add(item);

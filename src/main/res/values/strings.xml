@@ -12,6 +12,7 @@
     <string name="edit_name_item">Nom</string>
     <string name="edit_image_item">Image</string>
     <string name="bt_ajouter">Ajouter</string>
+    <string name="bt_add_image">Ajouter image</string>
     <string name="probleme_champs">Tous les champs n\'ont pas été remplis</string>
     <string name="probleme_cat_vide">Catégorie vide</string>
 

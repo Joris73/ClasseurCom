@@ -23,7 +23,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:spinnerMode="dialog"/>
+        android:spinnerMode="dialog" />
 
     <EditText
         android:layout_width="match_parent"
@@ -36,16 +36,33 @@
         android:inputType="text"
         android:gravity="center" />
 
-    <EditText
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:text="@string/edit_image_item"
-        android:id="@+id/edit_image"
-        android:singleLine="true"
-        android:inputType="text"
-        android:gravity="center" />
+        android:orientation="horizontal"
+        android:weightSum="1">
+
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:text="@string/edit_image_item"
+            android:id="@+id/edit_image"
+            android:singleLine="true"
+            android:inputType="text"
+            android:gravity="center"
+            android:layout_weight="0.99" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:text="@string/bt_add_image"
+            android:id="@+id/bt_path_image" />
+    </LinearLayout>
 
     <Button
         android:layout_width="match_parent"
@@ -53,5 +70,10 @@
         android:layout_marginTop="@dimen/activity_vertical_margin"
         android:text="@string/bt_ajouter"
         android:id="@+id/bt_ajouter" />
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/image" />
 
 </LinearLayout>
