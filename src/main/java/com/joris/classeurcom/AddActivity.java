@@ -1,13 +1,19 @@
 package com.joris.classeurcom;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
+import android.content.CursorLoader;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.ParcelFileDescriptor;
-import android.text.TextUtils;
+import android.provider.DocumentsContract;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -18,6 +24,7 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import java.io.File;
 import java.io.FileDescriptor;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -28,16 +35,13 @@ public class AddActivity extends Activity {
 
     private static final int SELECT_PICTURE = 1;
 
-    private String selectedImagePath;
-
     private EditText edit_nom;
-    private EditText edit_image;
     private String nom;
-    private String image;
+    private String selectedImagePath = "";
     private Spinner dropdownCat;
     private Spinner dropdownType;
     private boolean isCategorie = false;
-    private ImageView imagetttt;
+    private ImageView imagePreview;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,12 +51,15 @@ public class AddActivity extends Activity {
         final DatabaseHelper db = new DatabaseHelper(getApplicationContext());
 
         edit_nom = (EditText) findViewById(R.id.edit_nom);
-        edit_image = (EditText) findViewById(R.id.edit_image);
         Button button_add = (Button) findViewById(R.id.bt_ajouter);
         Button bt_image = (Button) findViewById(R.id.bt_path_image);
         dropdownType = (Spinner) findViewById(R.id.spinner_type);
         dropdownCat = (Spinner) findViewById(R.id.spinner_cat);
-        imagetttt = (ImageView) findViewById(R.id.image);
+        imagePreview = (ImageView) findViewById(R.id.imagePreview);
+
+        if (MainActivity.listeCategorie.isEmpty()) {
+            dropdownType.setSelection(1);
+        }
 
         ArrayAdapter<String> adapter;
         List<String> list;
@@ -71,8 +78,12 @@ public class AddActivity extends Activity {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 if (position == 0) {
-                    isCategorie = false;
-                    dropdownCat.setVisibility(View.VISIBLE);
+                    if (!MainActivity.listeCategorie.isEmpty()) {
+                        isCategorie = false;
+                        dropdownCat.setVisibility(View.VISIBLE);
+                    } else {
+                        dropdownType.setSelection(1);
+                    }
                 } else {
                     isCategorie = true;
                     dropdownCat.setVisibility(View.GONE);
@@ -90,10 +101,10 @@ public class AddActivity extends Activity {
             public void onClick(View v) {
                 if (recupererValeurs()) {
                     if (isCategorie) {
-                        MainActivity.listeCategorie.add(db.createCategorie(nom, image));
+                        MainActivity.addCategorie(db.createCategorie(nom, selectedImagePath));
                     } else {
                         Categorie categorie = MainActivity.listeCategorie.get(dropdownCat.getSelectedItemPosition());
-                        db.createItem(categorie, nom, image);
+                        db.createItem(categorie, nom, selectedImagePath);
                     }
 
                     finish();
@@ -114,8 +125,6 @@ public class AddActivity extends Activity {
             }
         });
 
-        setFocusChange();
-
         db.closeDB();
     }
 
@@ -123,19 +132,75 @@ public class AddActivity extends Activity {
         if (resultCode == RESULT_OK) {
             if (requestCode == SELECT_PICTURE) {
                 Uri selectedImageUri = data.getData();
-                Log.wtf("1", selectedImageUri.toString());
-
-                selectedImagePath = selectedImageUri.getPath();
-                Log.wtf("2", selectedImagePath);
-                edit_image.setText(selectedImagePath);
-
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+                    selectedImagePath = getRealPathFromURI(this, selectedImageUri);
+                } else {
+                    selectedImagePath = getPath(selectedImageUri);
+                }
+                Log.wtf("tg", getPath(selectedImageUri));
                 try {
-                    imagetttt.setImageBitmap(getBitmapFromUri(selectedImageUri));
+                    imagePreview.setImageBitmap(getBitmapFromUri(selectedImageUri));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         }
+    }
+
+    /**
+     * Pour récupérer le realPath avant kitkat
+     *
+     * @param context
+     * @param contentUri
+     * @return
+     */
+    public String getRealPathFromURI(Context context, Uri contentUri) {
+        Cursor cursor = null;
+        try {
+            String[] proj = {MediaStore.Images.Media.DATA};
+            cursor = context.getContentResolver().query(contentUri, proj, null, null, null);
+            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            cursor.moveToFirst();
+            return cursor.getString(column_index);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+    }
+
+    /**
+     * Pour récupérer le realPath à partir de kitkat
+     *
+     * @param contentUri
+     * @return
+     */
+    @SuppressLint("NewApi")
+    public String getPath(Uri contentUri) {// Will return "image:x*"
+        String wholeID = DocumentsContract.getDocumentId(contentUri);
+
+        // Split at colon, use second item in the array
+        String id = wholeID.split(":")[1];
+
+        String[] column = {MediaStore.Images.Media.DATA};
+
+        // where id is equal to
+        String sel = MediaStore.Images.Media._ID + "=?";
+
+        Cursor cursor = getContentResolver().query(
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI, column, sel,
+                new String[]{id}, null);
+
+        String filePath = "";
+
+        int columnIndex = cursor.getColumnIndex(column[0]);
+
+        if (cursor.moveToFirst()) {
+            filePath = cursor.getString(columnIndex);
+        }
+
+        cursor.close();
+        return filePath;
     }
 
     private Bitmap getBitmapFromUri(Uri uri) throws IOException {
@@ -152,38 +217,10 @@ public class AddActivity extends Activity {
      */
     private boolean recupererValeurs() {
         nom = edit_nom.getText().toString();
-        image = edit_image.getText().toString();
 
-        if (nom.isEmpty() || image.isEmpty())
+        if (nom.isEmpty() || selectedImagePath.isEmpty())
             return false;
 
         return true;
-    }
-
-    /**
-     * Va changer le text dans les edittext en fonction du focus
-     */
-    private void setFocusChange() {
-        edit_nom.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (!hasFocus && TextUtils.isEmpty(edit_nom.getText().toString())) {
-                    edit_nom.setText(getString(R.string.edit_name_item));
-                } else if (hasFocus && edit_nom.getText().toString().equals(getString(R.string.edit_name_item))) {
-                    edit_nom.setText("");
-                }
-            }
-        });
-
-        edit_image.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (!hasFocus && TextUtils.isEmpty(edit_image.getText().toString())) {
-                    edit_image.setText(getString(R.string.edit_image_item));
-                } else if (hasFocus && edit_image.getText().toString().equals(getString(R.string.edit_image_item))) {
-                    edit_image.setText("");
-                }
-            }
-        });
     }
 }

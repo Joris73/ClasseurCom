@@ -10,16 +10,10 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.Toast;
 
-public class CategorieFragment extends Fragment {
-    private MainActivity context;
+public class CategorieFragment extends GridFragment {
+    private MainActivity mainContext;
 
     public CategorieFragment() {
-    }
-
-    @SuppressLint("ValidFragment")
-    public CategorieFragment(MainActivity context) {
-        super();
-        this.context = context;
     }
 
     @Override
@@ -32,18 +26,22 @@ public class CategorieFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_categorie, container, false);
 
+        mainContext = (MainActivity) getActivity();
+
         GridView grid = (GridView) rootView.findViewById(R.id.grid_view_principale);
-        CategorieAdapter adapter = new CategorieAdapter(getActivity(), MainActivity.listeCategorie);
+        adapter = new CategorieAdapter(getActivity(), MainActivity.listeCategorie);
         grid.setAdapter(adapter);
         grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> arg0, View v, int position,
                                     long arg3) {
-                if (!MainActivity.listeCategorie.get(position).getListItem().isEmpty()) {
-                    ItemFragment fragment = new ItemFragment(context);
+                if (!mainContext.listeCategorie.get(position).getListItem().isEmpty()) {
+                    ItemFragment fragment = new ItemFragment();
                     Bundle bundle = new Bundle();
                     bundle.putInt("id", position);
                     fragment.setArguments(bundle);
+
+                    mainContext.fragmentGrid = fragment;
 
                     getFragmentManager().beginTransaction()
                             .replace(R.id.frame_item_detail_container, fragment)

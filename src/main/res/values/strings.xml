@@ -9,12 +9,13 @@
     <string name="yes">Oui</string>
     <string name="no">Non</string>
     <string name="title_activity_add">AddActivity</string>
-    <string name="edit_name_item">Nom</string>
-    <string name="edit_image_item">Image</string>
+    <string name="tv_name_item">Nom :</string>
+    <string name="tv_image_item">Image :</string>
     <string name="bt_ajouter">Ajouter</string>
     <string name="bt_add_image">Ajouter image</string>
     <string name="probleme_champs">Tous les champs n\'ont pas été remplis</string>
     <string name="probleme_cat_vide">Catégorie vide</string>
+    <string name="select_picture">Choisissez une image</string>
 
     <string-array name="type_item">
         <item>Objet</item>

@@ -11,19 +11,14 @@ import android.widget.GridView;
 
 import java.util.ArrayList;
 
-public class ItemFragment extends Fragment {
-    private MainActivity context;
+public class ItemFragment extends GridFragment {
 
     public ItemFragment() {
     }
 
-    @SuppressLint("ValidFragment")
-    public ItemFragment(MainActivity context) {
-        super();
-        this.context = context;
-    }
-
     static ArrayList<Item> listTemp;
+
+    private MainActivity mainContext;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -35,19 +30,21 @@ public class ItemFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_categorie, container, false);
 
+        mainContext = (MainActivity) getActivity();
+
         Bundle bundle = this.getArguments();
         int id = bundle.getInt("id", 0);
         listTemp = MainActivity.listeCategorie.get(id).getListItem();
 
         GridView grid = (GridView) rootView.findViewById(R.id.grid_view_principale);
-        ItemAdapter adapter = new ItemAdapter(getActivity(), listTemp);
+        adapter = new ItemAdapter(getActivity(), listTemp);
         grid.setAdapter(adapter);
         grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> arg0, View v, int position,
                                     long arg3) {
-                context.addItemChoisi(listTemp.get(position));
-                CategorieFragment fragment = new CategorieFragment(context);
+                mainContext.addItemChoisi(listTemp.get(position));
+                CategorieFragment fragment = new CategorieFragment();
                 getFragmentManager().beginTransaction()
                         .replace(R.id.frame_item_detail_container, fragment)
                         .commit();

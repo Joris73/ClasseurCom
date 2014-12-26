@@ -2,6 +2,10 @@ package com.joris.classeurcom;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.ParcelFileDescriptor;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +13,9 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.io.File;
+import java.io.FileDescriptor;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class ItemAdapter extends BaseAdapter {
@@ -46,9 +53,25 @@ public class ItemAdapter extends BaseAdapter {
         ImageView image = (ImageView) vi.findViewById(R.id.grid_image);
         TextView name = (TextView) vi.findViewById(R.id.grid_name);
 
-        image.setImageResource(activity.getResources().getIdentifier(item.getImage(), "drawable", activity.getPackageName()));
+
+        try {
+            File f = new File(item.getImage());
+            Uri yourUri = Uri.fromFile(f);
+            image.setImageBitmap(getBitmapFromUri(yourUri));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         name.setText(item.getNom());
 
         return vi;
+    }
+
+    private Bitmap getBitmapFromUri(Uri uri) throws IOException {
+        ParcelFileDescriptor parcelFileDescriptor =
+                activity.getContentResolver().openFileDescriptor(uri, "r");
+        FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
+        Bitmap image = BitmapFactory.decodeFileDescriptor(fileDescriptor);
+        parcelFileDescriptor.close();
+        return image;
     }
 }
