@@ -10,6 +10,7 @@ import android.util.Log;
 import java.util.ArrayList;
 
 /**
+ * Base de données qui gère l'enregistrement des categories et des elements de l'application
  * Created by Joris on 12/12/2014.
  */
 public class DatabaseHelper extends SQLiteOpenHelper {

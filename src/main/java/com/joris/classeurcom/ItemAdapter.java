@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Environment;
 import android.os.ParcelFileDescriptor;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -55,9 +56,10 @@ public class ItemAdapter extends BaseAdapter {
 
 
         try {
-            File f = new File(item.getImage());
-            Uri yourUri = Uri.fromFile(f);
-            image.setImageBitmap(getBitmapFromUri(yourUri));
+            String root = Environment.getExternalStorageDirectory().toString();
+            File f = new File(root + "/ClasseurCom_images/" + item.getImage());
+            Uri realUri = Uri.fromFile(f);
+            image.setImageBitmap(getBitmapFromUri(realUri));
         } catch (IOException e) {
             e.printStackTrace();
         }

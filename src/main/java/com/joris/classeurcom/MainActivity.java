@@ -2,11 +2,9 @@ package com.joris.classeurcom;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Fragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -44,6 +42,27 @@ public class MainActivity extends Activity {
     public static void addCategorie(Categorie cat) {
         listeCategorie.add(cat);
         fragmentGrid.updateList();
+    }
+
+    /**
+     * Va testé si une categorie ou un item d'une categorie existe déjà
+     * @param name le nom
+     * @param categorie peut etre null
+     * @return si existe ou pas
+     */
+    public static boolean isExist(String name, Categorie categorie) {
+        if (categorie == null){
+            for (Categorie cat : listeCategorie) {
+                if (cat.getNom().equals(name))
+                    return true;
+            }
+        } else {
+            for (Item item : categorie.getListItem()) {
+                if (item.getNom().equals(name))
+                    return true;
+            }
+        }
+        return false;
     }
 
     @Override

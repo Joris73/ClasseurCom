@@ -2,10 +2,10 @@ package com.joris.classeurcom;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Environment;
 import android.os.ParcelFileDescriptor;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -55,9 +55,10 @@ public class CategorieAdapter extends BaseAdapter {
         TextView name = (TextView) vi.findViewById(R.id.grid_name);
 
         try {
-            File f = new File(categorie.getImage());
-            Uri yourUri = Uri.fromFile(f);
-            image.setImageBitmap(getBitmapFromUri(yourUri));
+            String root = Environment.getExternalStorageDirectory().toString();
+            File f = new File(root + "/ClasseurCom_images/" + categorie.getImage());
+            Uri realUri = Uri.fromFile(f);
+            image.setImageBitmap(getBitmapFromUri(realUri));
         } catch (IOException e) {
             e.printStackTrace();
         }

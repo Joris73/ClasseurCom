@@ -15,6 +15,7 @@
     <string name="bt_add_image">Ajouter image</string>
     <string name="probleme_champs">Tous les champs n\'ont pas été remplis</string>
     <string name="probleme_cat_vide">Catégorie vide</string>
+    <string name="probleme_existe_deja">Existe déjà !</string>
     <string name="select_picture">Choisissez une image</string>
 
     <string-array name="type_item">

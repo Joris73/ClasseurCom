@@ -1,6 +1,5 @@
 package com.joris.classeurcom;
 
-import android.annotation.SuppressLint;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,15 +9,9 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 public class ItemListFragment extends Fragment {
-    private MainActivity context;
+    private MainActivity mainContext;
 
     public ItemListFragment() {
-    }
-
-    @SuppressLint("ValidFragment")
-    public ItemListFragment(MainActivity context) {
-        super();
-        this.context = context;
     }
 
     private ListItemAdapter adapter;
@@ -27,6 +20,8 @@ public class ItemListFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        mainContext = (MainActivity) getActivity();
+
         ListView list = (ListView) getActivity().findViewById(R.id.list_view_item);
         adapter = new ListItemAdapter(getActivity(), MainActivity.listeEnCours);
         list.setAdapter(adapter);
@@ -34,7 +29,7 @@ public class ItemListFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> arg0, View v, int position,
                                     long arg3) {
-                context.dellItemChoisi(position);
+                mainContext.dellItemChoisi(position);
             }
         });
     }

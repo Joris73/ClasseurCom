@@ -2,6 +2,11 @@ package com.joris.classeurcom;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.Environment;
+import android.os.ParcelFileDescriptor;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +14,9 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.io.File;
+import java.io.FileDescriptor;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class ListItemAdapter extends BaseAdapter {
@@ -49,6 +57,25 @@ public class ListItemAdapter extends BaseAdapter {
         image.setImageResource(activity.getResources().getIdentifier(item.getImage(), "drawable", activity.getPackageName()));
         name.setText(item.getNom());
 
+        try {
+            String root = Environment.getExternalStorageDirectory().toString();
+            File f = new File(root + "/ClasseurCom_images/" + item.getImage());
+            Uri realUri = Uri.fromFile(f);
+            image.setImageBitmap(getBitmapFromUri(realUri));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        name.setText(item.getNom());
+
         return vi;
+    }
+
+    private Bitmap getBitmapFromUri(Uri uri) throws IOException {
+        ParcelFileDescriptor parcelFileDescriptor =
+                activity.getContentResolver().openFileDescriptor(uri, "r");
+        FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
+        Bitmap image = BitmapFactory.decodeFileDescriptor(fileDescriptor);
+        parcelFileDescriptor.close();
+        return image;
     }
 }
