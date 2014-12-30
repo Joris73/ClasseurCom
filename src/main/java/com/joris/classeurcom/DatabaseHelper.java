@@ -10,8 +10,8 @@ import android.util.Log;
 import java.util.ArrayList;
 
 /**
- * Base de données qui gère l'enregistrement des categories et des elements de l'application
- * Created by Joris on 12/12/2014.
+ * Base de données qui gère l'enregistrement des categories et des elements de l'application Created
+ * by Joris on 12/12/2014.
  */
 public class DatabaseHelper extends SQLiteOpenHelper {
 
@@ -76,7 +76,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-
+    /**
+     * Créé une categorie et l'ajoute dans la base de donnée
+     *
+     * @param nom
+     *         nom de la categorie
+     * @param image
+     *         image de la categorie
+     * @return l'objet categorie
+     */
     public Categorie createCategorie(String nom, String image) {
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -89,6 +97,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return new Categorie(id, nom, image, null);
     }
 
+    /**
+     * Créé un item et l'ajoute à la base de donnée
+     *
+     * @param categorie
+     *         la categorie de l'item
+     * @param nom
+     *         nom de l'item
+     * @param image
+     *         l'image de l'item
+     * @return l'objet item
+     */
     public Item createItem(Categorie categorie, String nom, String image) {
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -105,7 +124,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return item;
     }
 
-    public void createCategorieItem(long id_categorie, long id_item) {
+    /**
+     * Methode privée appelé par @createItem pour lier l'item à une categorie dans la base
+     *
+     * @param id_categorie
+     *         l'id de l'a categorie
+     * @param id_item
+     *         l'id de l'item
+     */
+    private void createCategorieItem(long id_categorie, long id_item) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -116,7 +143,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
-
+    /**
+     * Renvoie toutes les categories de la base de donnée
+     *
+     * @return liste de categorie
+     */
     public ArrayList<Categorie> getAllCategorie() {
         ArrayList<Categorie> listCategories = new ArrayList<>();
 
@@ -145,12 +176,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
     /**
-     * Return true si ok.
+     * Va récupérer tous les item pour une categorie
      *
      * @param categorie
-     * @return
+     *         categorie pour laquel on recherche les item
+     * @return true si des items trouvé sinon false
      */
-    public boolean getAllItemForCategorie(Categorie categorie) {
+    private boolean getAllItemForCategorie(Categorie categorie) {
         ArrayList<Item> listItem = new ArrayList<>();
 
         String selectQuery = "SELECT  * "
@@ -181,10 +213,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    // closing database
+    /**
+     * Ferme la DB
+     */
     public void closeDB() {
         SQLiteDatabase db = this.getReadableDatabase();
         if (db != null && db.isOpen())
             db.close();
+    }
+
+    /**
+     * Efface toute la base de donnée
+     */
+    public void removeAll() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_CATEGORIE_ITEM, null, null);
+        db.delete(TABLE_ITEM, null, null);
+        db.delete(TABLE_CATEGORIE, null, null);
+        closeDB();
     }
 }

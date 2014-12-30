@@ -8,6 +8,9 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+/**
+ * Fragement qui gère l'affichage de la phrase actuel
+ */
 public class ItemListFragment extends Fragment {
     private MainActivity mainContext;
 
@@ -40,6 +43,9 @@ public class ItemListFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_liste_item, container, false);
     }
 
+    /**
+     * Mets à jour la liste
+     */
     public void updateList() {
         adapter.notifyDataSetChanged();
     }

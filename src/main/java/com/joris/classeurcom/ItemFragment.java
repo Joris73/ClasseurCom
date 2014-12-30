@@ -1,7 +1,5 @@
 package com.joris.classeurcom;
 
-import android.annotation.SuppressLint;
-import android.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +9,9 @@ import android.widget.GridView;
 
 import java.util.ArrayList;
 
+/**
+ * Fragment qui affiche les item d'une categorie
+ */
 public class ItemFragment extends GridFragment {
 
     public ItemFragment() {
@@ -34,7 +35,7 @@ public class ItemFragment extends GridFragment {
 
         Bundle bundle = this.getArguments();
         int id = bundle.getInt("id", 0);
-        listTemp = MainActivity.listeCategorie.get(id).getListItem();
+        listTemp = mainContext.listeCategorie.get(id).getListItem();
 
         GridView grid = (GridView) rootView.findViewById(R.id.grid_view_principale);
         adapter = new ItemAdapter(getActivity(), listTemp);

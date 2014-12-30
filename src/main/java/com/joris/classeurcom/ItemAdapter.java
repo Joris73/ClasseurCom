@@ -19,6 +19,9 @@ import java.io.FileDescriptor;
 import java.io.IOException;
 import java.util.ArrayList;
 
+/**
+ * Adaptateur d'item
+ */
 public class ItemAdapter extends BaseAdapter {
 
     private Activity activity;
@@ -68,6 +71,15 @@ public class ItemAdapter extends BaseAdapter {
         return vi;
     }
 
+
+    /**
+     * Methode pour récupérer une image au format bitmap à partir de son uri
+     *
+     * @param uri
+     *         chemin de l'image
+     * @return image bitmap
+     * @throws IOException
+     */
     private Bitmap getBitmapFromUri(Uri uri) throws IOException {
         ParcelFileDescriptor parcelFileDescriptor =
                 activity.getContentResolver().openFileDescriptor(uri, "r");

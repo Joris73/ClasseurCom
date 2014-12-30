@@ -7,6 +7,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
+/**
+ * Classe abstraite de Fragment qui nous sert dans le @MainActivity qui nous permet de mettre à jour
+ * la liste du fragment actuel
+ */
 public abstract class GridFragment extends Fragment {
 
     protected BaseAdapter adapter;

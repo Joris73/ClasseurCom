@@ -3,8 +3,8 @@ package com.joris.classeurcom;
 import java.util.ArrayList;
 
 /**
+ * Classe Categorie
  * Created by Joris on 25/11/2014.
- * Cool non ?
  */
 public class Categorie {
     private long id;

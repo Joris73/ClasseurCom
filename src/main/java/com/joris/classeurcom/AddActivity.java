@@ -30,7 +30,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ * Activité qui permet l'ajout de nouvelles élement dans l'application
+ */
 public class AddActivity extends Activity {
 
     private static final int SELECT_PICTURE = 1;
@@ -138,6 +140,9 @@ public class AddActivity extends Activity {
         db.closeDB();
     }
 
+    /**
+     * Récupère l'image selectionné par l'utilisateur
+     */
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             if (requestCode == SELECT_PICTURE) {

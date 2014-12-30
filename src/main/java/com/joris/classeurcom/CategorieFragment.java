@@ -1,7 +1,5 @@
 package com.joris.classeurcom;
 
-import android.annotation.SuppressLint;
-import android.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +8,9 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.Toast;
 
+/**
+ * Fragment pour géré l'affichage des categories
+ */
 public class CategorieFragment extends GridFragment {
     private MainActivity mainContext;
 

@@ -1,8 +1,7 @@
 package com.joris.classeurcom;
 
 /**
- * Created by Joris on 25/11/2014.
- * Cool non ?
+ * Classe Item Created by Joris on 25/11/2014.
  */
 public class Item {
     private long id;
