@@ -4,7 +4,7 @@ package com.joris.classeurcom;
  * Classe Item Created by Joris on 25/11/2014.
  */
 public class Item {
-    private long id;
+    private final long id;
     private String nom;
     private String image;
 

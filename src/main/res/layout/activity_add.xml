@@ -48,12 +48,20 @@
             android:inputType="text"
             android:gravity="center"/>
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:text="@string/tv_image_item"
+            android:id="@+id/tv2"
+            android:gravity="center"/>
+
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="@dimen/activity_vertical_margin"
             android:weightSum="1">
 
             <ImageView
@@ -61,6 +69,7 @@
                 android:layout_height="wrap_content"
                 android:adjustViewBounds="true"
                 android:id="@+id/imagePreview"
+                android:contentDescription="@string/image_desc"
                 android:layout_weight="0.99"/>
 
             <Button

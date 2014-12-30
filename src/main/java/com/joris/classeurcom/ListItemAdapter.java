@@ -22,11 +22,11 @@ import java.util.ArrayList;
 /**
  * Adaptateur de la phrase actuel
  */
-public class ListItemAdapter extends BaseAdapter {
+class ListItemAdapter extends BaseAdapter {
 
-    private Activity activity;
+    private final Activity activity;
     private static LayoutInflater inflater = null;
-    private ArrayList<Item> listeItem;
+    private final ArrayList<Item> listeItem;
 
     public ListItemAdapter(Activity a, ArrayList<Item> listeItem) {
         activity = a;

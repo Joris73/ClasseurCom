@@ -13,7 +13,7 @@ import java.util.ArrayList;
  * Base de données qui gère l'enregistrement des categories et des elements de l'application Created
  * by Joris on 12/12/2014.
  */
-public class DatabaseHelper extends SQLiteOpenHelper {
+class DatabaseHelper extends SQLiteOpenHelper {
 
     // Logcat tag
     private static final String LOG = "DatabaseHelper";
@@ -94,7 +94,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         long id = db.insert(TABLE_CATEGORIE, null, values);
 
-        return new Categorie(id, nom, image, null);
+        return new Categorie(id, nom, image);
     }
 
     /**
@@ -139,8 +139,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(KEY_ID_CATEGORIE, id_categorie);
         values.put(KEY_ID_ITEM, id_item);
 
-        long id = db.insert(TABLE_CATEGORIE_ITEM, null, values);
-
+        db.insert(TABLE_CATEGORIE_ITEM, null, values);
     }
 
     /**
@@ -163,7 +162,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             if (c.moveToFirst()) {
                 do {
                     Categorie categorie = new Categorie(c.getInt((c.getColumnIndex(KEY_ID_CATEGORIE))),
-                            c.getString(c.getColumnIndex(KEY_NAME_CATEGORIE)), c.getString(c.getColumnIndex(KEY_IMAGE_CATEGORIE)), null);
+                            c.getString(c.getColumnIndex(KEY_NAME_CATEGORIE)), c.getString(c.getColumnIndex(KEY_IMAGE_CATEGORIE)));
                     getAllItemForCategorie(categorie);
 
                     listCategories.add(categorie);
@@ -208,7 +207,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             c.close();
             return true;
         } else {
-            c.close();
             return false;
         }
     }

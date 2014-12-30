@@ -2,7 +2,6 @@ package com.joris.classeurcom;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -105,7 +104,7 @@ public class AddActivity extends Activity {
                 intent.setType("image/*");
                 intent.setAction(Intent.ACTION_GET_CONTENT);
                 startActivityForResult(Intent.createChooser(intent,
-                        "Select Picture"), SELECT_PICTURE);
+                        getString(R.string.select_picture)), SELECT_PICTURE);
             }
         });
 
@@ -147,9 +146,9 @@ public class AddActivity extends Activity {
         if (resultCode == RESULT_OK) {
             if (requestCode == SELECT_PICTURE) {
                 Uri selectedImageUri = data.getData();
-                String selectedImagePath = "";
+                String selectedImagePath;
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
-                    selectedImagePath = getRealPathFromURI(this, selectedImageUri);
+                    selectedImagePath = getRealPathFromURI(selectedImageUri);
                 } else {
                     selectedImagePath = getRealPathAfterKitKat(selectedImageUri);
                 }
@@ -171,7 +170,7 @@ public class AddActivity extends Activity {
      *         le nom du fichier
      * @return Le nom du fichier enregistré
      */
-    public String saveBitmapInSDCARD(String name) {
+    String saveBitmapInSDCARD(String name) {
         String debName;
         if (isCategorie) {
             debName = "Categorie-";
@@ -200,15 +199,15 @@ public class AddActivity extends Activity {
     /**
      * Pour récupérer le realPath avant kitkat
      *
-     * @param context
      * @param contentUri
-     * @return
+     *         uri
+     * @return le chemin absolu
      */
-    public String getRealPathFromURI(Context context, Uri contentUri) {
+    String getRealPathFromURI(Uri contentUri) {
         Cursor cursor = null;
         try {
             String[] proj = {MediaStore.Images.Media.DATA};
-            cursor = context.getContentResolver().query(contentUri, proj, null, null, null);
+            cursor = getContentResolver().query(contentUri, proj, null, null, null);
             int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
             cursor.moveToFirst();
             return cursor.getString(column_index);
@@ -223,10 +222,11 @@ public class AddActivity extends Activity {
      * Pour récupérer le realPath à partir de kitkat
      *
      * @param contentUri
-     * @return
+     *         uri
+     * @return le chemin absolu
      */
     @SuppressLint("NewApi")
-    public String getRealPathAfterKitKat(Uri contentUri) {// Will return "image:x*"
+    String getRealPathAfterKitKat(Uri contentUri) {// Will return "image:x*"
         String wholeID = DocumentsContract.getDocumentId(contentUri);
 
         // Split at colon, use second item in the array
@@ -279,13 +279,13 @@ public class AddActivity extends Activity {
      *         la taille en pixel du côté le plus grand désiré
      * @return le bitmap redimentionné
      */
-    public Bitmap resizeImageForImageView(Bitmap bitmap, int size) {
-        Bitmap resizedBitmap = null;
+    Bitmap resizeImageForImageView(Bitmap bitmap, int size) {
+        Bitmap resizedBitmap;
         int originalWidth = bitmap.getWidth();
         int originalHeight = bitmap.getHeight();
         int newWidth = -1;
         int newHeight = -1;
-        float multFactor = -1.0F;
+        float multFactor;
         if (originalHeight > originalWidth) {
             newHeight = size;
             multFactor = (float) originalWidth / (float) originalHeight;
@@ -308,9 +308,7 @@ public class AddActivity extends Activity {
     private boolean recupererValeurs() {
         nom = edit_nom.getText().toString();
 
-        if (nom.isEmpty() || bitmapSelected == null)
-            return false;
+        return !(nom.isEmpty() || bitmapSelected == null);
 
-        return true;
     }
 }

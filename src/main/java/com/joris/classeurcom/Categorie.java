@@ -7,16 +7,15 @@ import java.util.ArrayList;
  * Created by Joris on 25/11/2014.
  */
 public class Categorie {
-    private long id;
+    private final long id;
     private String nom;
     private String image;
     private ArrayList<Item> listItem;
 
-    public Categorie(long id, String nom, String image, ArrayList<Item> listItem) {
+    public Categorie(long id, String nom, String image) {
         this.id = id;
         this.nom = nom;
         this.image = image;
-        this.listItem = listItem;
     }
 
     public long getId() {

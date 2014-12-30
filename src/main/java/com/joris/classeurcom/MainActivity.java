@@ -2,7 +2,6 @@ package com.joris.classeurcom;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -33,7 +32,7 @@ public class MainActivity extends Activity {
     private final static String FRAGMENT_TAG_LIST = "ItemListFragment_TAG";
 
     static public ArrayList<Categorie> listeCategorie = new ArrayList<>();
-    static public ArrayList<Item> listeEnCours = new ArrayList<>();
+    static public final ArrayList<Item> listeEnCours = new ArrayList<>();
     static public GridFragment fragmentGrid;
 
     @Override
@@ -144,126 +143,147 @@ public class MainActivity extends Activity {
     /**
      * Methode qui export la BDD au format json dans un fichier
      */
-    public void exportBDD() {
-        ProgressDialog progress = new ProgressDialog(this);
-        progress.setMessage(getString(R.string.export_message));
-        progress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-        progress.setIndeterminate(true);
-        progress.setCancelable(false);
-        progress.show();
-        File file = new File(Environment.getExternalStorageDirectory() + "/BDDClasseurCom.txt");
-        if (file.exists()) file.delete();
+    void exportBDD() {
+        File mPath = new File(Environment.getExternalStorageDirectory() + "//DIR//");
+        FileDialog fileDialog = new FileDialog(this, mPath);
+        fileDialog.setFileEndsWith(".txt");
+        fileDialog.addDirectoryListener(new FileDialog.DirectorySelectedListener() {
+            public void directorySelected(File directory) {
+/*
+                ProgressDialog progress = new ProgressDialog(getApplicationContext());
+                progress.setMessage(getString(R.string.export_message));
+                progress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+                progress.setIndeterminate(true);
+                progress.setCancelable(false);
+                progress.show();*/
+                File file = new File(directory.toString() + "/BDDClasseurCom.txt");
+                if (file.exists()) file.delete();
 
-        FileOutputStream fos = null;
-        try {
-            fos = new FileOutputStream(file, true);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        PrintStream ps = new PrintStream(fos);
-
-        JSONObject jsonExport = new JSONObject();
-        JSONArray catArray = new JSONArray();
-
-        int jumpTime = 0;
-
-        try {
-            for (Categorie cat : listeCategorie) {
-                JSONObject jsonCategorie = new JSONObject();
-                jsonCategorie.put("Name", cat.getNom());
-                jsonCategorie.put("Image", cat.getImage());
-
-                JSONArray itemArray = new JSONArray();
-                for (Item item : cat.getListItem()) {
-
-                    JSONObject jsonItem = new JSONObject();
-                    jsonItem.put("Name", item.getNom());
-                    jsonItem.put("Image", item.getImage());
-                    itemArray.put(jsonItem);
+                FileOutputStream fos = null;
+                try {
+                    fos = new FileOutputStream(file, true);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
                 }
+                PrintStream ps = new PrintStream(fos);
 
-                jsonCategorie.put("Items", itemArray);
+                JSONObject jsonExport = new JSONObject();
+                JSONArray catArray = new JSONArray();
 
-                catArray.put(jsonCategorie);
-                jumpTime = +listeCategorie.size() / 100;
-                progress.setProgress(jumpTime);
+                int jumpTime = 0;
+
+                try {
+                    for (Categorie cat : listeCategorie) {
+                        JSONObject jsonCategorie = new JSONObject();
+                        jsonCategorie.put("Name", cat.getNom());
+                        jsonCategorie.put("Image", cat.getImage());
+
+                        JSONArray itemArray = new JSONArray();
+                        for (Item item : cat.getListItem()) {
+
+                            JSONObject jsonItem = new JSONObject();
+                            jsonItem.put("Name", item.getNom());
+                            jsonItem.put("Image", item.getImage());
+                            itemArray.put(jsonItem);
+                        }
+
+                        jsonCategorie.put("Items", itemArray);
+
+                        catArray.put(jsonCategorie);
+                        jumpTime = +listeCategorie.size() / 100;
+                        //progress.setProgress(jumpTime);
+                    }
+
+                    jsonExport.put("ClasseurCom", catArray);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                ps.append(jsonExport.toString());
+                ps.close();
+                try {
+                    fos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                //progress.dismiss();
+                Toast.makeText(getApplicationContext(), getString(R.string.export_done), Toast.LENGTH_SHORT).show();
             }
-
-            jsonExport.put("ClasseurCom", catArray);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        ps.append(jsonExport.toString());
-        ps.close();
-        try {
-            fos.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        progress.dismiss();
-        Toast.makeText(getApplicationContext(), getString(R.string.export_done), Toast.LENGTH_SHORT).show();
+        });
+        fileDialog.setSelectDirectoryOption(true);
+        fileDialog.showDialog();
     }
 
     /**
      * Methode qui importe une BDD au format json
      */
-    public void importBDD() {
-        ProgressDialog progress = new ProgressDialog(this);
-        progress.setMessage(getString(R.string.import_done));
-        progress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-        progress.setIndeterminate(true);
-        progress.setCancelable(false);
-        progress.show();
+    void importBDD() {
 
-        final DatabaseHelper db = new DatabaseHelper(getApplicationContext());
 
-        File file = new File(Environment.getExternalStorageDirectory() + "/BDDClasseurCom.txt");
-        if (file.exists()) {
-            db.removeAll();
-            StringBuilder text = new StringBuilder();
-            try {
-                BufferedReader br = new BufferedReader(new FileReader(file));
-                String line;
-                while ((line = br.readLine()) != null) {
-                    text.append(line);
-                    text.append('\n');
-                }
-                br.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            progress.setProgress(50);
+        File mPath = new File(Environment.getExternalStorageDirectory() + "//DIR//");
+        FileDialog fileDialog = new FileDialog(this, mPath);
+        fileDialog.setFileEndsWith(".txt");
+        fileDialog.addFileListener(new FileDialog.FileSelectedListener() {
+            public void fileSelected(File file) {
+/*
+                ProgressDialog progress = new ProgressDialog(getApplicationContext());
+                progress.setMessage(getString(R.string.import_message));
+                progress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+                progress.setIndeterminate(true);
+                progress.setCancelable(false);
+                progress.show();*/
 
-            try {
-                JSONObject jsonObj = new JSONObject(text.toString());
-                JSONArray arrayCat = jsonObj.getJSONArray("ClasseurCom");
+                final DatabaseHelper db = new DatabaseHelper(getApplicationContext());
 
-                for (int i = 0; i < arrayCat.length(); i++) {
-                    String nomCat = arrayCat.getJSONObject(i).getString("Name");
-                    String imageCat = arrayCat.getJSONObject(i).getString("Image");
-
-                    Categorie categorie = db.createCategorie(nomCat, imageCat);
-
-                    JSONArray arrayItem = arrayCat.getJSONObject(i).getJSONArray("Items");
-                    for (int j = 0; j < arrayItem.length(); j++) {
-                        String nomItem = arrayItem.getJSONObject(j).getString("Name");
-                        String imageItem = arrayItem.getJSONObject(j).getString("Image");
-                        db.createItem(categorie, nomItem, imageItem);
+                //File file = new File(Environment.getExternalStorageDirectory() + "/BDDClasseurCom.txt");
+                if (file.exists()) {
+                    db.removeAll();
+                    StringBuilder text = new StringBuilder();
+                    try {
+                        BufferedReader br = new BufferedReader(new FileReader(file));
+                        String line;
+                        while ((line = br.readLine()) != null) {
+                            text.append(line);
+                            text.append('\n');
+                        }
+                        br.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
-                    addCategorie(categorie);
+                    //progress.setProgress(50);
+
+                    try {
+                        JSONObject jsonObj = new JSONObject(text.toString());
+                        JSONArray arrayCat = jsonObj.getJSONArray("ClasseurCom");
+
+                        for (int i = 0; i < arrayCat.length(); i++) {
+                            String nomCat = arrayCat.getJSONObject(i).getString("Name");
+                            String imageCat = arrayCat.getJSONObject(i).getString("Image");
+
+                            Categorie categorie = db.createCategorie(nomCat, imageCat);
+
+                            JSONArray arrayItem = arrayCat.getJSONObject(i).getJSONArray("Items");
+                            for (int j = 0; j < arrayItem.length(); j++) {
+                                String nomItem = arrayItem.getJSONObject(j).getString("Name");
+                                String imageItem = arrayItem.getJSONObject(j).getString("Image");
+                                db.createItem(categorie, nomItem, imageItem);
+                            }
+                            addCategorie(categorie);
+                        }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                    //progress.dismiss();
+                    Toast.makeText(getApplicationContext(), getString(R.string.import_done), Toast.LENGTH_SHORT).show();
+                } else {
+                    Log.e("Importation", "Fichier n'existe pas");
                 }
 
-            } catch (JSONException e) {
-                e.printStackTrace();
+                db.closeDB();
             }
-
-            progress.dismiss();
-            Toast.makeText(getApplicationContext(), getString(R.string.import_done), Toast.LENGTH_SHORT).show();
-        } else {
-            Log.e("Importation", "Fichier n'existe pas");
-        }
-
-        db.closeDB();
+        });
+        fileDialog.showDialog();
     }
 
     @Override

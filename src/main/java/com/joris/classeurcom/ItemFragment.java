@@ -17,14 +17,9 @@ public class ItemFragment extends GridFragment {
     public ItemFragment() {
     }
 
-    static ArrayList<Item> listTemp;
+    private static ArrayList<Item> listTemp;
 
     private MainActivity mainContext;
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

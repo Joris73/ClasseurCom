@@ -22,11 +22,11 @@ import java.util.ArrayList;
 /**
  * Adaptateur d'item
  */
-public class ItemAdapter extends BaseAdapter {
+class ItemAdapter extends BaseAdapter {
 
-    private Activity activity;
+    private final Activity activity;
     private static LayoutInflater inflater = null;
-    private ArrayList<Item> listeItem;
+    private final ArrayList<Item> listeItem;
 
     public ItemAdapter(Activity a, ArrayList<Item> listeItem) {
         activity = a;

@@ -23,6 +23,7 @@
     <string name="import_message">Importation en cours</string>
     <string name="export_done">Export de la BDD réussi</string>
     <string name="import_done">Importation de la BDD réussi</string>
+    <string name="image_desc">Image de prévisualisation</string>
 
     <string-array name="type_item">
         <item>Objet</item>

@@ -22,11 +22,11 @@ import java.util.ArrayList;
 /**
  * Adaptateur pour l'affichage des categories
  */
-public class CategorieAdapter extends BaseAdapter {
+class CategorieAdapter extends BaseAdapter {
 
-    private Activity activity;
+    private final Activity activity;
     private static LayoutInflater inflater = null;
-    private ArrayList<Categorie> listeCat;
+    private final ArrayList<Categorie> listeCat;
 
     public CategorieAdapter(Activity a, ArrayList<Categorie> listeCat) {
         activity = a;
