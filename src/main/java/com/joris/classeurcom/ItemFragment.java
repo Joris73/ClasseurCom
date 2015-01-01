@@ -1,5 +1,8 @@
 package com.joris.classeurcom;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +23,7 @@ public class ItemFragment extends GridFragment {
     private static ArrayList<Item> listTemp;
 
     private MainActivity mainContext;
+    int idCategorie;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -29,8 +33,8 @@ public class ItemFragment extends GridFragment {
         mainContext = (MainActivity) getActivity();
 
         Bundle bundle = this.getArguments();
-        int id = bundle.getInt("id", 0);
-        listTemp = mainContext.listeCategorie.get(id).getListItem();
+        idCategorie = bundle.getInt("id", 0);
+        listTemp = mainContext.listeCategorie.get(idCategorie).getListItem();
 
         GridView grid = (GridView) rootView.findViewById(R.id.grid_view_principale);
         adapter = new ItemAdapter(getActivity(), listTemp);
@@ -46,6 +50,30 @@ public class ItemFragment extends GridFragment {
                         .commit();
             }
         });
+
+        grid.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(mainContext);
+                builder.setMessage(R.string.message_dialog_mod_item)
+                        .setCancelable(true)
+                        .setPositiveButton(getString(R.string.yes),
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(final DialogInterface dialog,
+                                                        final int id) {
+                                        Intent intent = new Intent(getActivity(), ModifyActivity.class);
+                                        intent.putExtra("isCategorie", false);
+                                        intent.putExtra("posCategorie", idCategorie);
+                                        intent.putExtra("posItem", position);
+                                        startActivity(intent);
+                                    }
+                                })
+                        .setNegativeButton(getString(R.string.no), null);
+                builder.create().show();
+                return true;
+            }
+        });
+
         return rootView;
     }
 }

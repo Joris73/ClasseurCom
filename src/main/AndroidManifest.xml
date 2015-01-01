@@ -27,6 +27,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.joris.classeurcom.MainActivity"/>
         </activity>
+        <activity
+            android:name="com.joris.classeurcom.ModifyActivity"
+            android:label="@string/title_activity_modify"
+            android:parentActivityName="com.joris.classeurcom.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.joris.classeurcom.MainActivity"/>
+        </activity>
     </application>
 
 </manifest>

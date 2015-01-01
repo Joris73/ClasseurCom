@@ -4,12 +4,12 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -63,6 +63,11 @@ public class MainActivity extends Activity {
      */
     public static void addCategorie(Categorie cat) {
         listeCategorie.add(cat);
+        fragmentGrid.updateList();
+    }
+
+    public static void removeCategorie(Categorie cat) {
+        listeCategorie.remove(cat);
         fragmentGrid.updateList();
     }
 
@@ -125,7 +130,7 @@ public class MainActivity extends Activity {
      */
     public void dellItemChoisi(final int pos) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(getString(R.string.message_dialog))
+        builder.setMessage(getString(R.string.message_dialog_del_item))
                 .setCancelable(true)
                 .setPositiveButton(getString(R.string.yes),
                         new DialogInterface.OnClickListener() {
@@ -149,13 +154,7 @@ public class MainActivity extends Activity {
         fileDialog.setFileEndsWith(".txt");
         fileDialog.addDirectoryListener(new FileDialog.DirectorySelectedListener() {
             public void directorySelected(File directory) {
-/*
-                ProgressDialog progress = new ProgressDialog(getApplicationContext());
-                progress.setMessage(getString(R.string.export_message));
-                progress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-                progress.setIndeterminate(true);
-                progress.setCancelable(false);
-                progress.show();*/
+
                 File file = new File(directory.toString() + "/BDDClasseurCom.txt");
                 if (file.exists()) file.delete();
 
@@ -169,8 +168,6 @@ public class MainActivity extends Activity {
 
                 JSONObject jsonExport = new JSONObject();
                 JSONArray catArray = new JSONArray();
-
-                int jumpTime = 0;
 
                 try {
                     for (Categorie cat : listeCategorie) {
@@ -190,8 +187,6 @@ public class MainActivity extends Activity {
                         jsonCategorie.put("Items", itemArray);
 
                         catArray.put(jsonCategorie);
-                        jumpTime = +listeCategorie.size() / 100;
-                        //progress.setProgress(jumpTime);
                     }
 
                     jsonExport.put("ClasseurCom", catArray);
@@ -205,8 +200,13 @@ public class MainActivity extends Activity {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                //progress.dismiss();
-                Toast.makeText(getApplicationContext(), getString(R.string.export_done), Toast.LENGTH_SHORT).show();
+
+                // Permet de rendre visible les fichier depuis l'explorer windows
+                Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+                intent.setData(Uri.fromFile(file));
+                sendBroadcast(intent);
+
+                messageInformation(R.string.export_done_title, R.string.export_done_message, android.R.drawable.ic_dialog_info);
             }
         });
         fileDialog.setSelectDirectoryOption(true);
@@ -217,26 +217,15 @@ public class MainActivity extends Activity {
      * Methode qui importe une BDD au format json
      */
     void importBDD() {
-
-
         File mPath = new File(Environment.getExternalStorageDirectory() + "//DIR//");
         FileDialog fileDialog = new FileDialog(this, mPath);
         fileDialog.setFileEndsWith(".txt");
         fileDialog.addFileListener(new FileDialog.FileSelectedListener() {
             public void fileSelected(File file) {
-/*
-                ProgressDialog progress = new ProgressDialog(getApplicationContext());
-                progress.setMessage(getString(R.string.import_message));
-                progress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-                progress.setIndeterminate(true);
-                progress.setCancelable(false);
-                progress.show();*/
 
                 final DatabaseHelper db = new DatabaseHelper(getApplicationContext());
 
-                //File file = new File(Environment.getExternalStorageDirectory() + "/BDDClasseurCom.txt");
                 if (file.exists()) {
-                    db.removeAll();
                     StringBuilder text = new StringBuilder();
                     try {
                         BufferedReader br = new BufferedReader(new FileReader(file));
@@ -249,11 +238,13 @@ public class MainActivity extends Activity {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                    //progress.setProgress(50);
 
                     try {
                         JSONObject jsonObj = new JSONObject(text.toString());
                         JSONArray arrayCat = jsonObj.getJSONArray("ClasseurCom");
+                        listeCategorie.clear();
+                        listeEnCours.clear();
+                        db.removeAll();
 
                         for (int i = 0; i < arrayCat.length(); i++) {
                             String nomCat = arrayCat.getJSONObject(i).getString("Name");
@@ -269,13 +260,12 @@ public class MainActivity extends Activity {
                             }
                             addCategorie(categorie);
                         }
-
+                        messageInformation(R.string.import_done_title, R.string.import_done_message, android.R.drawable.ic_dialog_info);
                     } catch (JSONException e) {
+                        Log.e("Importation", "Mauvais fichier !!!!");
+                        messageInformation(R.string.import_fail_title, R.string.import_fail_message, android.R.drawable.ic_dialog_alert);
                         e.printStackTrace();
                     }
-
-                    //progress.dismiss();
-                    Toast.makeText(getApplicationContext(), getString(R.string.import_done), Toast.LENGTH_SHORT).show();
                 } else {
                     Log.e("Importation", "Fichier n'existe pas");
                 }
@@ -284,6 +274,26 @@ public class MainActivity extends Activity {
             }
         });
         fileDialog.showDialog();
+    }
+
+    /**
+     * Methode pour afficher des messages d'informations
+     *
+     * @param title
+     *         id du string titre
+     * @param message
+     *         id du string message
+     * @param icon
+     *         id de l'icon
+     */
+    void messageInformation(int title, int message, int icon) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(message)
+                .setTitle(title)
+                .setNeutralButton(R.string.ok, null)
+                .setIcon(icon)
+                .setCancelable(true);
+        builder.create().show();
     }
 
     @Override
@@ -309,7 +319,20 @@ public class MainActivity extends Activity {
                 exportBDD();
                 return true;
             case R.id.action_import:
-                importBDD();
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setMessage(getString(R.string.message_dialog_import))
+                        .setCancelable(true)
+                        .setTitle(R.string.message_dialog_import_title)
+                        .setPositiveButton(getString(R.string.yes),
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(final DialogInterface dialog,
+                                                        final int id) {
+                                        importBDD();
+                                    }
+                                })
+                        .setNegativeButton(getString(R.string.no), null)
+                        .setIcon(android.R.drawable.ic_dialog_alert);
+                builder.create().show();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

@@ -30,6 +30,14 @@ public class Categorie {
         return image;
     }
 
+    public void setNom(String nom) {
+        this.nom = nom;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
     public void addItem(Item item) {
         if (listItem == null)
             listItem = new ArrayList<>();

@@ -14,134 +14,151 @@ import android.os.ParcelFileDescriptor;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
- * Activité qui permet l'ajout de nouvelles élement dans l'application
+ * Activité qui permet la modification d'un element ou sa suppression
  */
-public class AddActivity extends Activity {
+public class ModifyActivity extends Activity {
 
     private static final int SELECT_PICTURE = 1;
 
     private EditText edit_nom;
+    private String nomInit;
     private String nom;
-    private Spinner dropdownCat;
-    private Spinner dropdownType;
-    private boolean isCategorie = false;
     private ImageView imagePreview;
     private Bitmap bitmapSelected = null;
-    private TextView tv_cat;
+    private boolean isCategorie = true;
+    private Categorie categorie;
+    private Item item;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add);
+        setContentView(R.layout.activity_modify);
 
-        final DatabaseHelper db = new DatabaseHelper(getApplicationContext());
 
-        tv_cat = (TextView) findViewById(R.id.tv_categorie);
-        dropdownType = (Spinner) findViewById(R.id.spinner_type);
-        dropdownCat = (Spinner) findViewById(R.id.spinner_cat);
-        edit_nom = (EditText) findViewById(R.id.edit_nom);
-        Button button_add = (Button) findViewById(R.id.bt_ajouter);
-        Button bt_image = (Button) findViewById(R.id.bt_path_image);
-        imagePreview = (ImageView) findViewById(R.id.imagePreview);
+        Intent intent = getIntent();
+        if (intent != null) {
+            final DatabaseHelper db = new DatabaseHelper(getApplicationContext());
 
-        if (MainActivity.listeCategorie.isEmpty()) {
-            dropdownType.setSelection(1);
-        }
+            edit_nom = (EditText) findViewById(R.id.edit_nomcat_mod);
+            Button bt_image = (Button) findViewById(R.id.bt_path_image_mod);
+            Button bt_modifier = (Button) findViewById(R.id.bt_modifier);
+            Button bt_supprimer = (Button) findViewById(R.id.bt_supprimer);
+            imagePreview = (ImageView) findViewById(R.id.imagePreview_mod);
 
-        ArrayAdapter<String> adapter;
-        List<String> list;
-        list = new ArrayList<>();
+            categorie = MainActivity.listeCategorie.get(intent.getIntExtra("posCategorie", 0));
 
-        for (Categorie cat : MainActivity.listeCategorie) {
-            list.add(cat.getNom());
-        }
+            if (!intent.getBooleanExtra("isCategorie", true)) {
+                isCategorie = false;
+                item = categorie.getListItem().get(intent.getIntExtra("posItem", 0));
+            }
 
-        adapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_spinner_item, list);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        dropdownCat.setAdapter(adapter);
-
-        dropdownType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                if (position == 0) {
-                    if (!MainActivity.listeCategorie.isEmpty()) {
-                        isCategorie = false;
-                        tv_cat.setVisibility(View.VISIBLE);
-                        dropdownCat.setVisibility(View.VISIBLE);
-                    } else {
-                        dropdownType.setSelection(1);
-                    }
-                } else {
-                    isCategorie = true;
-                    tv_cat.setVisibility(View.GONE);
-                    dropdownCat.setVisibility(View.GONE);
+            if (isCategorie) {
+                try {
+                    nomInit = categorie.getNom();
+                    edit_nom.setText(nomInit);
+                    String root = Environment.getExternalStorageDirectory().toString();
+                    File f = new File(root + "/ClasseurCom_images/" + categorie.getImage());
+                    Uri realUri = Uri.fromFile(f);
+                    bitmapSelected = getBitmapFromUri(realUri);
+                    imagePreview.setImageBitmap(bitmapSelected);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                try {
+                    nomInit = item.getNom();
+                    edit_nom.setText(nomInit);
+                    String root = Environment.getExternalStorageDirectory().toString();
+                    File f = new File(root + "/ClasseurCom_images/" + item.getImage());
+                    Uri realUri = Uri.fromFile(f);
+                    bitmapSelected = getBitmapFromUri(realUri);
+                    imagePreview.setImageBitmap(bitmapSelected);
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parentView) {
-            }
+            bt_image.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent();
+                    intent.setType("image/*");
+                    intent.setAction(Intent.ACTION_GET_CONTENT);
+                    startActivityForResult(Intent.createChooser(intent,
+                            getString(R.string.select_picture)), SELECT_PICTURE);
+                }
+            });
 
-        });
+            bt_modifier.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (recupererValeurs()) {
+                        if (isCategorie) {
+                            if (nomInit.equals(nom) || !MainActivity.isExist(nom, null)) {
+                                deleteImageInSdCard(categorie.getImage());
+                                String imageName = saveBitmapInSDCARD(nom);
+                                categorie.setNom(nom);
+                                categorie.setImage(imageName);
+                                db.updateCategorie(categorie);
+                                MainActivity.fragmentGrid.updateList();
+                                finish();
+                            } else {
+                                Toast.makeText(getApplicationContext(), getString(R.string.probleme_existe_deja), Toast.LENGTH_SHORT).show();
+                            }
+                        } else {
+                            if (nomInit.equals(nom) || !MainActivity.isExist(nom, categorie)) {
+                                deleteImageInSdCard(item.getImage());
+                                String imageName = saveBitmapInSDCARD(nom);
+                                item.setNom(nom);
+                                item.setImage(imageName);
+                                db.updateItem(item);
+                                MainActivity.fragmentGrid.updateList();
+                                finish();
+                            } else {
+                                Toast.makeText(getApplicationContext(), getString(R.string.probleme_existe_deja), Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    } else {
+                        Toast.makeText(getApplicationContext(), getString(R.string.probleme_champs), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
 
-        bt_image.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent();
-                intent.setType("image/*");
-                intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(Intent.createChooser(intent,
-                        getString(R.string.select_picture)), SELECT_PICTURE);
-            }
-        });
-
-        button_add.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (recupererValeurs()) {
+            bt_supprimer.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
                     if (isCategorie) {
-                        if (!MainActivity.isExist(nom, null)) {
-                            String imageName = saveBitmapInSDCARD(nom);
-                            MainActivity.addCategorie(db.createCategorie(nom, imageName));
+                        if (categorie.getListItem().isEmpty()) {
+                            db.deleteCategorie(categorie);
+                            deleteImageInSdCard(categorie.getImage());
+                            MainActivity.removeCategorie(categorie);
                             finish();
                         } else {
-                            Toast.makeText(getApplicationContext(), getString(R.string.probleme_existe_deja), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), getString(R.string.probleme_categorie_non_vide), Toast.LENGTH_LONG).show();
                         }
                     } else {
-                        Categorie categorie = MainActivity.listeCategorie.get(dropdownCat.getSelectedItemPosition());
-                        if (!MainActivity.isExist(nom, categorie)) {
-                            String imageName = saveBitmapInSDCARD(categorie.getNom() + "." + nom);
-                            db.createItem(categorie, nom, imageName);
-                            finish();
-                        } else {
-                            Toast.makeText(getApplicationContext(), getString(R.string.probleme_existe_deja), Toast.LENGTH_SHORT).show();
-                        }
+                        db.deleteItem(item);
+                        categorie.getListItem().remove(item);
+                        deleteImageInSdCard(item.getImage());
+                        MainActivity.fragmentGrid.updateList();
+                        finish();
                     }
-                } else {
-                    Toast.makeText(getApplicationContext(), getString(R.string.probleme_champs), Toast.LENGTH_SHORT).show();
                 }
-            }
-        });
+            });
 
-        db.closeDB();
+            db.closeDB();
+        }
     }
 
     /**
@@ -166,6 +183,21 @@ public class AddActivity extends Activity {
                 }
             }
         }
+    }
+
+    /**
+     * Supprime l'image à partir de son nom sur la carte sd
+     *
+     * @param name
+     *         nom de l'element
+     */
+    void deleteImageInSdCard(String name) {
+        String root = Environment.getExternalStorageDirectory().toString();
+        File file = new File(root + "/ClasseurCom_images/" + name);
+        file.delete();
+        Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        intent.setData(Uri.fromFile(file));
+        sendBroadcast(intent);
     }
 
     /**
@@ -269,7 +301,7 @@ public class AddActivity extends Activity {
      * @param uri
      *         le path
      * @return le bitmap
-     * @throws IOException
+     * @throws java.io.IOException
      */
     private Bitmap getBitmapFromUri(Uri uri) throws IOException {
         ParcelFileDescriptor parcelFileDescriptor =

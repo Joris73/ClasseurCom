@@ -212,6 +212,53 @@ class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     /**
+     * Mets à jour dans la base une categorie
+     *
+     * @param categorie
+     *         la categorie à mettre à jour
+     * @return si ça marché ou pas
+     */
+    public boolean updateCategorie(Categorie categorie) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(KEY_NAME_CATEGORIE, categorie.getNom());
+        values.put(KEY_IMAGE_CATEGORIE, categorie.getImage());
+
+        return db.update(TABLE_CATEGORIE, values, KEY_ID_CATEGORIE + "=" + categorie.getId(), null) > 0;
+    }
+
+    /**
+     * Mets à jour dans la base un item
+     *
+     * @param item
+     *         l'item à mettre à jour
+     * @return si ça marché ou pas
+     */
+    public boolean updateItem(Item item) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(KEY_NAME_ITEM, item.getNom());
+        values.put(KEY_IMAGE_ITEM, item.getImage());
+
+        return db.update(TABLE_ITEM, values, KEY_ID_ITEM + "=" + item.getId(), null) > 0;
+    }
+
+
+    public boolean deleteCategorie(Categorie categorie) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.delete(TABLE_CATEGORIE, KEY_ID_CATEGORIE + "=" + categorie.getId(), null) > 0;
+    }
+
+    public boolean deleteItem(Item item) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_CATEGORIE_ITEM, KEY_ID_ITEM + "=" + item.getId(), null);
+        return db.delete(TABLE_CATEGORIE_ITEM, KEY_ID_ITEM + "=" + item.getId(), null)
+                - db.delete(TABLE_ITEM, KEY_ID_ITEM + "=" + item.getId(), null) == 0;
+    }
+
+    /**
      * Ferme la DB
      */
     public void closeDB() {

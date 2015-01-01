@@ -14,53 +14,20 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="vertical">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="@string/tv_type"
-            android:id="@+id/tv_type"
-            android:gravity="center"/>
-
-        <Spinner
-            android:id="@+id/spinner_type"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:entries="@array/type_item"
-            android:layout_marginTop="@dimen/activity_vertical_margin"
-            android:spinnerMode="dialog"/>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:layout_marginTop="@dimen/activity_vertical_margin"
-            android:text="@string/tv_categorie"
-            android:id="@+id/tv_categorie"
-            android:gravity="center"/>
-
-        <Spinner
-            android:id="@+id/spinner_cat"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/activity_vertical_margin"
-            android:spinnerMode="dialog"/>
-
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:layout_marginTop="@dimen/activity_vertical_margin"
             android:text="@string/tv_name_item"
-            android:id="@+id/tv1"
+            android:id="@+id/cat_mod"
             android:gravity="center"/>
 
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:id="@+id/edit_nom"
+            android:id="@+id/edit_nomcat_mod"
             android:singleLine="true"
             android:inputType="text"
             android:gravity="center"/>
@@ -71,7 +38,7 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:layout_marginTop="@dimen/activity_vertical_margin"
             android:text="@string/tv_image_item"
-            android:id="@+id/tv2"
+            android:id="@+id/tv2_mod"
             android:gravity="center"/>
 
 
@@ -85,7 +52,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:adjustViewBounds="true"
-                android:id="@+id/imagePreview"
+                android:id="@+id/imagePreview_mod"
                 android:contentDescription="@string/image_desc"
                 android:layout_weight="0.99"/>
 
@@ -94,15 +61,30 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/activity_vertical_margin"
                 android:text="@string/bt_add_image"
-                android:id="@+id/bt_path_image"/>
+                android:id="@+id/bt_path_image_mod"/>
         </LinearLayout>
 
-        <Button
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/activity_vertical_margin"
-            android:text="@string/bt_ajouter"
-            android:id="@+id/bt_ajouter"/>
+            android:orientation="horizontal"
+            android:weightSum="1">
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.50"
+                android:text="@string/bt_modifier"
+                android:id="@+id/bt_modifier" />
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.50"
+                android:text="@string/bt_supprimer"
+                android:id="@+id/bt_supprimer" />
+        </LinearLayout>
 
     </LinearLayout>
 </ScrollView>

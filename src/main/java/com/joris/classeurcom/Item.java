@@ -25,4 +25,12 @@ public class Item {
     public String getImage() {
         return image;
     }
+
+    public void setNom(String nom) {
+        this.nom = nom;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
 }

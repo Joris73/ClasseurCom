@@ -1,5 +1,8 @@
 package com.joris.classeurcom;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -47,6 +50,29 @@ public class CategorieFragment extends GridFragment {
                 }
             }
         });
+
+        grid.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(mainContext);
+                builder.setMessage(R.string.message_dialog_mod_cat)
+                        .setCancelable(true)
+                        .setPositiveButton(getString(R.string.yes),
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(final DialogInterface dialog,
+                                                        final int id) {
+                                        Intent intent = new Intent(getActivity(), ModifyActivity.class);
+                                        intent.putExtra("isCategorie", true);
+                                        intent.putExtra("posCategorie", position);
+                                        startActivity(intent);
+                                    }
+                                })
+                        .setNegativeButton(getString(R.string.no), null);
+                builder.create().show();
+                return true;
+            }
+        });
+
         return rootView;
     }
 }
