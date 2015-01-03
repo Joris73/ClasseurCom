@@ -23,13 +23,17 @@ import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Activité qui permet la modification d'un element ou sa suppression
  */
 public class ModifyActivity extends Activity {
 
-    private static final int SELECT_PICTURE = 1;
+    static final int SELECT_PICTURE = 1;
+    static final int REQUEST_TAKE_PHOTO = 2;
+    String mCurrentPhotoPath;
 
     private EditText edit_nom;
     private String nomInit;
@@ -51,7 +55,8 @@ public class ModifyActivity extends Activity {
             final DatabaseHelper db = new DatabaseHelper(getApplicationContext());
 
             edit_nom = (EditText) findViewById(R.id.edit_nomcat_mod);
-            Button bt_image = (Button) findViewById(R.id.bt_path_image_mod);
+            Button bt_path_image = (Button) findViewById(R.id.bt_path_image_mod);
+            Button bt_take_image = (Button) findViewById(R.id.bt_take_image_mod);
             Button bt_modifier = (Button) findViewById(R.id.bt_modifier);
             Button bt_supprimer = (Button) findViewById(R.id.bt_supprimer);
             imagePreview = (ImageView) findViewById(R.id.imagePreview_mod);
@@ -89,7 +94,7 @@ public class ModifyActivity extends Activity {
                 }
             }
 
-            bt_image.setOnClickListener(new View.OnClickListener() {
+            bt_path_image.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent();
@@ -97,6 +102,13 @@ public class ModifyActivity extends Activity {
                     intent.setAction(Intent.ACTION_GET_CONTENT);
                     startActivityForResult(Intent.createChooser(intent,
                             getString(R.string.select_picture)), SELECT_PICTURE);
+                }
+            });
+
+            bt_take_image.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dispatchTakePictureIntent();
                 }
             });
 
@@ -162,7 +174,8 @@ public class ModifyActivity extends Activity {
     }
 
     /**
-     * Récupère l'image selectionné par l'utilisateur
+     * Récupère l'image selectionné par l'utilisateur En cas d'annulation on supprime le fichier
+     * temp
      */
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
@@ -181,7 +194,20 @@ public class ModifyActivity extends Activity {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+            } else if (requestCode == REQUEST_TAKE_PHOTO) {
+                galleryAddPic();
+                try {
+                    File f = new File(mCurrentPhotoPath);
+                    bitmapSelected = getBitmapFromUri(Uri.fromFile(f));
+                    imagePreview.setImageBitmap(bitmapSelected);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
+        }
+        if (resultCode == RESULT_CANCELED && requestCode == REQUEST_TAKE_PHOTO) {
+            File f = new File(mCurrentPhotoPath);
+            f.delete();
         }
     }
 
@@ -342,6 +368,60 @@ public class ModifyActivity extends Activity {
         }
         resizedBitmap = Bitmap.createScaledBitmap(bitmap, newWidth, newHeight, false);
         return resizedBitmap;
+    }
+
+    /**
+     * Permet de lancer l'application photo
+     */
+    void dispatchTakePictureIntent() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            File photoFile = null;
+            try {
+                photoFile = createImageFile();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+            if (photoFile != null) {
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
+                        Uri.fromFile(photoFile));
+                startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
+            }
+        }
+    }
+
+    /**
+     * Créé la photo prise par l'appareil photo.
+     *
+     * @return le fichier créé
+     * @throws IOException
+     */
+    File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("ddMMyyyy_HHmmss").format(new Date());
+        String imageFileName = "ClasseurCom_" + timeStamp + "_";
+        File storageDir = Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        mCurrentPhotoPath = image.getAbsolutePath();
+        return image;
+    }
+
+    /**
+     * Ajoute l'image prise par l'appareil photo à la galerie.
+     */
+    private void galleryAddPic() {
+        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        File f = new File(mCurrentPhotoPath);
+        Uri contentUri = Uri.fromFile(f);
+        mediaScanIntent.setData(contentUri);
+        this.sendBroadcast(mediaScanIntent);
     }
 
     /**

@@ -41,7 +41,6 @@
             android:id="@+id/tv2_mod"
             android:gravity="center"/>
 
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -56,12 +55,25 @@
                 android:contentDescription="@string/image_desc"
                 android:layout_weight="0.99"/>
 
-            <Button
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/activity_vertical_margin"
-                android:text="@string/bt_add_image"
-                android:id="@+id/bt_path_image_mod"/>
+                android:orientation="vertical">
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
+                    android:text="@string/bt_take_image"
+                    android:id="@+id/bt_take_image_mod"/>
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
+                    android:text="@string/bt_add_image"
+                    android:id="@+id/bt_path_image_mod"/>
+            </LinearLayout>
         </LinearLayout>
 
         <LinearLayout
