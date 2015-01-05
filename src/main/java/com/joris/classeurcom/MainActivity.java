@@ -2,6 +2,7 @@ package com.joris.classeurcom;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -29,11 +30,12 @@ import java.util.ArrayList;
  */
 public class MainActivity extends Activity {
 
-    private final static String FRAGMENT_TAG_LIST = "ItemListFragment_TAG";
-
     static public ArrayList<Categorie> listeCategorie = new ArrayList<>();
-    static public final ArrayList<Item> listeEnCours = new ArrayList<>();
-    static public GridFragment fragmentGrid;
+    static final ArrayList<Item> listeEnCours = new ArrayList<>();
+    static GridFragment fragmentGrid;
+    static ItemListFragment mitemFragment;
+
+    ProgressDialog progress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,14 +47,22 @@ public class MainActivity extends Activity {
         listeCategorie.clear();
         listeCategorie = db.getAllCategorie();
 
-        ItemListFragment fragment1 = new ItemListFragment();
-        fragmentGrid = new CategorieFragment();
+        mitemFragment = new ItemListFragment();
+        if (fragmentGrid == null)
+            fragmentGrid = new CategorieFragment();
         getFragmentManager().beginTransaction()
-                .replace(R.id.frame_item_list, fragment1, FRAGMENT_TAG_LIST)
+                .replace(R.id.frame_item_list, mitemFragment)
                 .replace(R.id.frame_item_detail_container, fragmentGrid)
                 .commit();
 
         db.closeDB();
+    }
+
+    @Override
+    public void onResume() {
+        fragmentGrid.updateList();
+        mitemFragment.updateList();
+        super.onResume();
     }
 
     /**
@@ -118,8 +128,7 @@ public class MainActivity extends Activity {
      */
     public void addItemChoisi(Item item) {
         listeEnCours.add(item);
-        ItemListFragment mitemListFragment = (ItemListFragment) getFragmentManager().findFragmentByTag(FRAGMENT_TAG_LIST);
-        mitemListFragment.updateList();
+        mitemFragment.updateList();
     }
 
     /**
@@ -137,8 +146,7 @@ public class MainActivity extends Activity {
                             public void onClick(final DialogInterface dialog,
                                                 final int id) {
                                 listeEnCours.remove(pos);
-                                ItemListFragment mitemListFragment = (ItemListFragment) getFragmentManager().findFragmentByTag(FRAGMENT_TAG_LIST);
-                                mitemListFragment.updateList();
+                                mitemFragment.updateList();
                             }
                         })
                 .setNegativeButton(getString(R.string.no), null);
@@ -214,63 +222,105 @@ public class MainActivity extends Activity {
     }
 
     /**
-     * Methode qui importe une BDD au format json
+     * Importation d'une base de donnée à partir du fichier json passé en paramètre Methode qui doit
+     * si possible est appeler dans un thread
+     *
+     * @param file
      */
-    void importBDD() {
+    void importBDD(File file) {
+
+        final DatabaseHelper db = new DatabaseHelper(getApplicationContext());
+
+        if (file.exists()) {
+            StringBuilder text = new StringBuilder();
+            try {
+                BufferedReader br = new BufferedReader(new FileReader(file));
+                String line;
+                while ((line = br.readLine()) != null) {
+                    text.append(line);
+                    text.append('\n');
+                }
+                br.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            try {
+                JSONObject jsonObj = new JSONObject(text.toString());
+                JSONArray arrayCat = jsonObj.getJSONArray("ClasseurCom");
+
+                final int sizeJson = arrayCat.length();
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        progress = createdProgressDialog(R.string.title_progress_import, R.string.message_progress_import, sizeJson);
+                    }
+                });
+                listeCategorie.clear();
+                listeEnCours.clear();
+                db.removeAll();
+
+                for (int i = 0; i < sizeJson; i++) {
+                    String nomCat = arrayCat.getJSONObject(i).getString("Name");
+                    String imageCat = arrayCat.getJSONObject(i).getString("Image");
+
+                    final Categorie categorie = db.createCategorie(nomCat, imageCat);
+
+                    JSONArray arrayItem = arrayCat.getJSONObject(i).getJSONArray("Items");
+                    for (int j = 0; j < arrayItem.length(); j++) {
+                        String nomItem = arrayItem.getJSONObject(j).getString("Name");
+                        String imageItem = arrayItem.getJSONObject(j).getString("Image");
+                        db.createItem(categorie, nomItem, imageItem);
+                    }
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            addCategorie(categorie);
+                        }
+                    });
+                    progress.incrementProgressBy(1);
+                }
+                progress.dismiss();
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        messageInformation(R.string.import_done_title, R.string.import_done_message, android.R.drawable.ic_dialog_info);
+                    }
+                });
+            } catch (JSONException e) {
+                Log.e("Importation", "Mauvais fichier !!!!");
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        messageInformation(R.string.import_fail_title, R.string.import_fail_message, android.R.drawable.ic_dialog_alert);
+                    }
+                });
+                e.printStackTrace();
+            }
+        } else {
+            Log.e("Importation", "Fichier n'existe pas");
+        }
+
+        db.closeDB();
+    }
+
+    /**
+     * Methode qui demande à l'utilisateur de choisir le fichier json
+     */
+    void importChoiseBDD() {
         File mPath = new File(Environment.getExternalStorageDirectory() + "//DIR//");
         FileDialog fileDialog = new FileDialog(this, mPath);
         fileDialog.setFileEndsWith(".txt");
         fileDialog.addFileListener(new FileDialog.FileSelectedListener() {
-            public void fileSelected(File file) {
-
-                final DatabaseHelper db = new DatabaseHelper(getApplicationContext());
-
-                if (file.exists()) {
-                    StringBuilder text = new StringBuilder();
-                    try {
-                        BufferedReader br = new BufferedReader(new FileReader(file));
-                        String line;
-                        while ((line = br.readLine()) != null) {
-                            text.append(line);
-                            text.append('\n');
-                        }
-                        br.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
+            public void fileSelected(final File file) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        importBDD(file);
                     }
-
-                    try {
-                        JSONObject jsonObj = new JSONObject(text.toString());
-                        JSONArray arrayCat = jsonObj.getJSONArray("ClasseurCom");
-                        listeCategorie.clear();
-                        listeEnCours.clear();
-                        db.removeAll();
-
-                        for (int i = 0; i < arrayCat.length(); i++) {
-                            String nomCat = arrayCat.getJSONObject(i).getString("Name");
-                            String imageCat = arrayCat.getJSONObject(i).getString("Image");
-
-                            Categorie categorie = db.createCategorie(nomCat, imageCat);
-
-                            JSONArray arrayItem = arrayCat.getJSONObject(i).getJSONArray("Items");
-                            for (int j = 0; j < arrayItem.length(); j++) {
-                                String nomItem = arrayItem.getJSONObject(j).getString("Name");
-                                String imageItem = arrayItem.getJSONObject(j).getString("Image");
-                                db.createItem(categorie, nomItem, imageItem);
-                            }
-                            addCategorie(categorie);
-                        }
-                        messageInformation(R.string.import_done_title, R.string.import_done_message, android.R.drawable.ic_dialog_info);
-                    } catch (JSONException e) {
-                        Log.e("Importation", "Mauvais fichier !!!!");
-                        messageInformation(R.string.import_fail_title, R.string.import_fail_message, android.R.drawable.ic_dialog_alert);
-                        e.printStackTrace();
-                    }
-                } else {
-                    Log.e("Importation", "Fichier n'existe pas");
-                }
-
-                db.closeDB();
+                }).start();
             }
         });
         fileDialog.showDialog();
@@ -296,6 +346,26 @@ public class MainActivity extends Activity {
         builder.create().show();
     }
 
+    /**
+     * Methode qui génère une progress dialog
+     * @param title Le titre
+     * @param message Le message
+     * @param max La valeur max
+     * @return une ProgressDialog
+     */
+    ProgressDialog createdProgressDialog(int title, int message, int max) {
+        ProgressDialog mProgressDialog = new ProgressDialog(MainActivity.this);
+
+        mProgressDialog.setTitle(getString(title));
+        mProgressDialog.setMessage(getString(message));
+        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        mProgressDialog.setProgress(0);
+        mProgressDialog.setMax(max);
+        mProgressDialog.show();
+
+        return mProgressDialog;
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -308,8 +378,7 @@ public class MainActivity extends Activity {
         switch (item.getItemId()) {
             case R.id.action_reset:
                 listeEnCours.clear();
-                ItemListFragment mitemListFragment = (ItemListFragment) getFragmentManager().findFragmentByTag(FRAGMENT_TAG_LIST);
-                mitemListFragment.updateList();
+                mitemFragment.updateList();
                 return true;
             case R.id.action_add:
                 Intent intent = new Intent(getApplicationContext(), AddActivity.class);
@@ -327,7 +396,7 @@ public class MainActivity extends Activity {
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(final DialogInterface dialog,
                                                         final int id) {
-                                        importBDD();
+                                        importChoiseBDD();
                                     }
                                 })
                         .setNegativeButton(getString(R.string.no), null)

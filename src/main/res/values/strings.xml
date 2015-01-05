@@ -7,11 +7,16 @@
     <string name="action_import">Importer BDD</string>
     <string name="action_export">Exporter BDD</string>
     <string name="list_en_cours">Phrase en cours</string>
+    <string name="title_grid">Liste des catégories</string>
     <string name="message_dialog_mod_cat">Voulez vous modifier/supprimer cette catégorie ?</string>
     <string name="message_dialog_mod_item">Voulez vous modifier/supprimer cette objet ?</string>
     <string name="message_dialog_del_item">Voulez vous vraiment retirer cet objet ?</string>
     <string name="message_dialog_import_title">Importer une nouvelle BDD ?</string>
     <string name="message_dialog_import">Voulez vous vraiment importer une BDD ?\nCa supprimera la base actuel !</string>
+    <string name="title_progress_export">Exportation &#8230;</string>
+    <string name="message_progress_export">Exportation en cours, veuillez patienter et ne quitter pas l\'application !</string>
+    <string name="title_progress_import">Importation &#8230;</string>
+    <string name="message_progress_import">Importation en cours, veuillez patienter et ne quitter pas l\'application !</string>
     <string name="yes">Oui</string>
     <string name="no">Non</string>
     <string name="ok">OK</string>

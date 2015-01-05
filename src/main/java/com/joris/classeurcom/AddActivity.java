@@ -39,7 +39,8 @@ public class AddActivity extends Activity {
 
     static final int SELECT_PICTURE = 1;
     static final int REQUEST_TAKE_PHOTO = 2;
-    String mCurrentPhotoPath;
+    static String mCurrentPhotoPath;
+    static Bitmap bitmapSelected;
 
     private EditText edit_nom;
     private String nom;
@@ -47,7 +48,6 @@ public class AddActivity extends Activity {
     private Spinner dropdownType;
     private boolean isCategorie = false;
     private ImageView imagePreview;
-    private Bitmap bitmapSelected = null;
     private TextView tv_cat;
 
     @Override
@@ -65,6 +65,10 @@ public class AddActivity extends Activity {
         Button bt_take_image = (Button) findViewById(R.id.bt_take_image);
         Button button_add = (Button) findViewById(R.id.bt_ajouter);
         imagePreview = (ImageView) findViewById(R.id.imagePreview);
+
+        if (bitmapSelected != null) {
+            imagePreview.setImageBitmap(bitmapSelected);
+        }
 
         if (MainActivity.listeCategorie.isEmpty()) {
             dropdownType.setSelection(1);
@@ -157,8 +161,8 @@ public class AddActivity extends Activity {
     }
 
     /**
-     * Récupère l'image selectionné par l'utilisateur
-     * En cas d'annulation on supprime le fichier temp
+     * Récupère l'image selectionné par l'utilisateur En cas d'annulation on supprime le fichier
+     * temp
      */
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
@@ -173,6 +177,7 @@ public class AddActivity extends Activity {
                 try {
                     File f = new File(selectedImagePath);
                     bitmapSelected = getBitmapFromUri(Uri.fromFile(f));
+                    bitmapSelected = resizeImageForImageView(bitmapSelected, 750);
                     imagePreview.setImageBitmap(bitmapSelected);
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -182,6 +187,7 @@ public class AddActivity extends Activity {
                 try {
                     File f = new File(mCurrentPhotoPath);
                     bitmapSelected = getBitmapFromUri(Uri.fromFile(f));
+                    bitmapSelected = resizeImageForImageView(bitmapSelected, 750);
                     imagePreview.setImageBitmap(bitmapSelected);
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -400,5 +406,22 @@ public class AddActivity extends Activity {
 
         return !(nom.isEmpty() || bitmapSelected == null);
 
+    }
+
+    /**
+     * Lors de la destruction de l'activité on supprime bien nos deux variables static
+     */
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (!isChangingConfigurations()) {
+            mCurrentPhotoPath = null;
+            bitmapSelected = null;
+        }
+    }
+
+    @Override
+    public boolean isChangingConfigurations() {
+        return super.isChangingConfigurations();
     }
 }

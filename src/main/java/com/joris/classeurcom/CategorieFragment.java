@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 /**
@@ -23,11 +24,14 @@ public class CategorieFragment extends GridFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_categorie, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_grid, container, false);
 
         mainContext = (MainActivity) getActivity();
 
-        GridView grid = (GridView) rootView.findViewById(R.id.grid_view_principale);
+        TextView title = (TextView) rootView.findViewById(R.id.tv_title_grid);
+        title.setText(getString(R.string.title_grid));
+
+        GridView grid = (GridView) rootView.findViewById(R.id.grid_view_first);
         adapter = new CategorieAdapter(getActivity(), MainActivity.listeCategorie);
         grid.setAdapter(adapter);
         grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {

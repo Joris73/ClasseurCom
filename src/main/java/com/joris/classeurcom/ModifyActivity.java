@@ -33,13 +33,13 @@ public class ModifyActivity extends Activity {
 
     static final int SELECT_PICTURE = 1;
     static final int REQUEST_TAKE_PHOTO = 2;
-    String mCurrentPhotoPath;
+    static String mCurrentPhotoPath;
+    static Bitmap bitmapSelected;
 
     private EditText edit_nom;
     private String nomInit;
     private String nom;
     private ImageView imagePreview;
-    private Bitmap bitmapSelected = null;
     private boolean isCategorie = true;
     private Categorie categorie;
     private Item item;
@@ -190,6 +190,7 @@ public class ModifyActivity extends Activity {
                 try {
                     File f = new File(selectedImagePath);
                     bitmapSelected = getBitmapFromUri(Uri.fromFile(f));
+                    bitmapSelected = resizeImageForImageView(bitmapSelected, 750);
                     imagePreview.setImageBitmap(bitmapSelected);
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -199,6 +200,7 @@ public class ModifyActivity extends Activity {
                 try {
                     File f = new File(mCurrentPhotoPath);
                     bitmapSelected = getBitmapFromUri(Uri.fromFile(f));
+                    bitmapSelected = resizeImageForImageView(bitmapSelected, 750);
                     imagePreview.setImageBitmap(bitmapSelected);
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -432,5 +434,22 @@ public class ModifyActivity extends Activity {
 
         return !(nom.isEmpty() || bitmapSelected == null);
 
+    }
+
+    /**
+     * Lors de la destruction de l'activité on supprime bien nos deux variables static
+     */
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (!isChangingConfigurations()) {
+            mCurrentPhotoPath = null;
+            bitmapSelected = null;
+        }
+    }
+
+    @Override
+    public boolean isChangingConfigurations() {
+        return super.isChangingConfigurations();
     }
 }

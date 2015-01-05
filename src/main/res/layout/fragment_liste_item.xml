@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="@string/list_en_cours"
-        android:id="@+id/textView"
+        android:id="@+id/tv_list"
         android:layout_gravity="center_horizontal" />
 
     <ListView
