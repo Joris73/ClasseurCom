@@ -12,7 +12,7 @@
     <string name="message_dialog_mod_item">Voulez vous modifier/supprimer cette objet ?</string>
     <string name="message_dialog_del_item">Voulez vous vraiment retirer cet objet ?</string>
     <string name="message_dialog_import_title">Importer une nouvelle BDD ?</string>
-    <string name="message_dialog_import">Voulez vous vraiment importer une BDD ?\nCa supprimera la base actuel !</string>
+    <string name="message_dialog_import">Voulez vous vraiment importer une BDD ?\nCela supprimera la base actuel !</string>
     <string name="title_progress_export">Exportation &#8230;</string>
     <string name="message_progress_export">Exportation en cours, veuillez patienter et ne quitter pas l\'application !</string>
     <string name="title_progress_import">Importation &#8230;</string>
@@ -37,11 +37,11 @@
     <string name="probleme_categorie_non_vide">Impossible de supprimer cette catégorie. Elle est non vide !</string>
     <string name="select_picture">Choisissez une image</string>
     <string name="export_done_title">Export de la BDD réussi</string>
-    <string name="export_done_message">Le fichier \"BDDClasseurCom.txt\" c\'est votre base de donnée exporté et le dossier \"ClasseurCom_images\" qui se trouve à la racine de la mémoire interne se sont les images.</string>
+    <string name="export_done_message">Le fichier \"BDDClasseurCom.txt\" est votre base de donnée exportée et le dossier \"ClasseurCom_images\" qui se trouve à la racine de la mémoire interne ce sont les images.</string>
     <string name="import_done_title">Importation de la BDD réussi</string>
     <string name="import_done_message">N\'oubliez pas de copier à la racine de la mémoire interne le dossier \"ClasseurCom_images\" pour avoir vos images</string>
-    <string name="import_fail_title">Importation échoué</string>
-    <string name="import_fail_message">L\'importation a échoué, le fichier est incorrect. Si le fichier n\'a pas été modifié, il se nomme \"BDDClasseurCom.txt\"</string>
+    <string name="import_fail_title">Importation échouée</string>
+    <string name="import_fail_message">L\'importation a échouée, le fichier est incorrect. Si le fichier n\'a pas été modifié, il se nomme \"BDDClasseurCom.txt\"</string>
     <string name="image_desc">Image de prévisualisation</string>
 
     <string-array name="type_item">

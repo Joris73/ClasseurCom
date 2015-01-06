@@ -60,16 +60,15 @@ public class MainActivity extends Activity {
 
     @Override
     public void onResume() {
+        super.onResume();
         fragmentGrid.updateList();
         mitemFragment.updateList();
-        super.onResume();
     }
 
     /**
      * Ajoute une categorie dans la liste java et mets à jour l'affichage
      *
-     * @param cat
-     *         La categorie
+     * @param cat La categorie
      */
     public static void addCategorie(Categorie cat) {
         listeCategorie.add(cat);
@@ -84,10 +83,8 @@ public class MainActivity extends Activity {
     /**
      * Va testé si une categorie ou un item d'une categorie existe déjà
      *
-     * @param name
-     *         le nom
-     * @param categorie
-     *         peut etre null
+     * @param name      le nom
+     * @param categorie peut etre null
      * @return si existe ou pas
      */
     public static boolean isExist(String name, Categorie categorie) {
@@ -123,8 +120,7 @@ public class MainActivity extends Activity {
     /**
      * Ajoute l'item choisi par l'utilisateur dans la liste
      *
-     * @param item
-     *         item choisi
+     * @param item item choisi
      */
     public void addItemChoisi(Item item) {
         listeEnCours.add(item);
@@ -134,8 +130,7 @@ public class MainActivity extends Activity {
     /**
      * Appeler lors d'un appuie sur un item de la phrase pour demander sa suppréssion ou pas
      *
-     * @param pos
-     *         position de l'item dans la liste
+     * @param pos position de l'item dans la liste
      */
     public void dellItemChoisi(final int pos) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -329,12 +324,9 @@ public class MainActivity extends Activity {
     /**
      * Methode pour afficher des messages d'informations
      *
-     * @param title
-     *         id du string titre
-     * @param message
-     *         id du string message
-     * @param icon
-     *         id de l'icon
+     * @param title   id du string titre
+     * @param message id du string message
+     * @param icon    id de l'icon
      */
     void messageInformation(int title, int message, int icon) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -348,9 +340,10 @@ public class MainActivity extends Activity {
 
     /**
      * Methode qui génère une progress dialog
-     * @param title Le titre
+     *
+     * @param title   Le titre
      * @param message Le message
-     * @param max La valeur max
+     * @param max     La valeur max
      * @return une ProgressDialog
      */
     ProgressDialog createdProgressDialog(int title, int message, int max) {
