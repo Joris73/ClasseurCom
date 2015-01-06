@@ -10,7 +10,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.ParcelFileDescriptor;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.view.View;
@@ -24,7 +23,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
-import java.io.FileDescriptor;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -174,24 +174,16 @@ public class AddActivity extends Activity {
                 } else {
                     selectedImagePath = getRealPathAfterKitKat(selectedImageUri);
                 }
-                try {
-                    File f = new File(selectedImagePath);
-                    bitmapSelected = getBitmapFromUri(Uri.fromFile(f));
-                    bitmapSelected = resizeImageForImageView(bitmapSelected, 750);
-                    imagePreview.setImageBitmap(bitmapSelected);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                File f = new File(selectedImagePath);
+                bitmapSelected = decodeImageFile(f);
+                bitmapSelected = resizeImageForImageView(bitmapSelected, 750);
+                imagePreview.setImageBitmap(bitmapSelected);
             } else if (requestCode == REQUEST_TAKE_PHOTO) {
                 galleryAddPic();
-                try {
-                    File f = new File(mCurrentPhotoPath);
-                    bitmapSelected = getBitmapFromUri(Uri.fromFile(f));
-                    bitmapSelected = resizeImageForImageView(bitmapSelected, 750);
-                    imagePreview.setImageBitmap(bitmapSelected);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                File f = new File(mCurrentPhotoPath);
+                bitmapSelected = decodeImageFile(f);
+                bitmapSelected = resizeImageForImageView(bitmapSelected, 750);
+                imagePreview.setImageBitmap(bitmapSelected);
             }
         }
         if (resultCode == RESULT_CANCELED && requestCode == REQUEST_TAKE_PHOTO) {
@@ -203,8 +195,7 @@ public class AddActivity extends Activity {
     /**
      * Sauvegarde l'image importer après l'avoir redimentionné
      *
-     * @param name
-     *         le nom du fichier
+     * @param name le nom du fichier
      * @return Le nom du fichier enregistré
      */
     String saveBitmapInSDCARD(String name) {
@@ -241,8 +232,7 @@ public class AddActivity extends Activity {
     /**
      * Pour récupérer le realPath avant kitkat
      *
-     * @param contentUri
-     *         uri
+     * @param contentUri uri
      * @return le chemin absolu
      */
     String getRealPathFromURI(Uri contentUri) {
@@ -263,8 +253,7 @@ public class AddActivity extends Activity {
     /**
      * Pour récupérer le realPath à partir de kitkat
      *
-     * @param contentUri
-     *         uri
+     * @param contentUri uri
      * @return le chemin absolu
      */
     @SuppressLint("NewApi")
@@ -296,29 +285,41 @@ public class AddActivity extends Activity {
     }
 
     /**
-     * Récupérer le bitmap à partir d'une uri
+     * Décode un bitmap à partir d'un file
      *
-     * @param uri
-     *         le path
-     * @return le bitmap
-     * @throws IOException
+     * @param f le fichier image
+     * @return l'image bitmap
      */
-    private Bitmap getBitmapFromUri(Uri uri) throws IOException {
-        ParcelFileDescriptor parcelFileDescriptor =
-                getContentResolver().openFileDescriptor(uri, "r");
-        FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
-        Bitmap image = BitmapFactory.decodeFileDescriptor(fileDescriptor);
-        parcelFileDescriptor.close();
-        return image;
+    private Bitmap decodeImageFile(File f) {
+        try {
+            //Decode image size
+            BitmapFactory.Options o = new BitmapFactory.Options();
+            o.inJustDecodeBounds = true;
+            BitmapFactory.decodeStream(new FileInputStream(f), null, o);
+
+            //The new size we want to scale to
+            final int REQUIRED_SIZE = 1000;
+
+            //Find the correct scale value. It should be the power of 2.
+            int scale = 1;
+            while (o.outWidth / scale / 2 >= REQUIRED_SIZE && o.outHeight / scale / 2 >= REQUIRED_SIZE)
+                scale *= 2;
+
+            //Decode with inSampleSize
+            BitmapFactory.Options o2 = new BitmapFactory.Options();
+            o2.inSampleSize = scale;
+            return BitmapFactory.decodeStream(new FileInputStream(f), null, o2);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     /**
      * Redimentionne un bitmap en respectant le ratio
      *
-     * @param bitmap
-     *         le bitmap à redimentionner
-     * @param size
-     *         la taille en pixel du côté le plus grand désiré
+     * @param bitmap le bitmap à redimentionner
+     * @param size   la taille en pixel du côté le plus grand désiré
      * @return le bitmap redimentionné
      */
     Bitmap resizeImageForImageView(Bitmap bitmap, int size) {
@@ -341,6 +342,7 @@ public class AddActivity extends Activity {
             newWidth = size;
         }
         resizedBitmap = Bitmap.createScaledBitmap(bitmap, newWidth, newHeight, false);
+        bitmap.recycle();
         return resizedBitmap;
     }
 
@@ -416,6 +418,7 @@ public class AddActivity extends Activity {
         super.onDestroy();
         if (!isChangingConfigurations()) {
             mCurrentPhotoPath = null;
+            bitmapSelected.recycle();
             bitmapSelected = null;
         }
     }
