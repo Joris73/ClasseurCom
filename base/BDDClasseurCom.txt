@@ -1,0 +1,404 @@
+{"ClasseurCom": [
+{
+"Name": "Cereales et derives",
+"Image": "Categorie-CerealesEtDerives.jpeg",
+"Items": [
+{
+"Name": "Cereales",
+"Image": "Objet-CerealesEtDerives.Cereales.jpeg"
+}
+,{
+"Name": "Lentilles",
+"Image": "Objet-CerealesEtDerives.Lentilles.jpeg"
+}
+,{
+"Name": "Pain",
+"Image": "Objet-CerealesEtDerives.Pain.jpeg"
+}
+,{
+"Name": "Pate",
+"Image": "Objet-CerealesEtDerives.Pate.jpeg"
+}
+,{
+"Name": "Pois chiche",
+"Image": "Objet-CerealesEtDerives.PoisChiche.jpeg"
+}
+,{
+"Name": "Riz",
+"Image": "Objet-CerealesEtDerives.Riz.jpeg"
+}
+,{
+"Name": "Semoule",
+"Image": "Objet-CerealesEtDerives.Semoule.jpeg"
+}
+]
+}
+,{
+"Name": "Condiments",
+"Image": "Categorie-Condiments.jpeg",
+"Items": [
+{
+"Name": "Epices",
+"Image": "Objet-Condiments.Epices.jpeg"
+}
+,{
+"Name": "Poivre",
+"Image": "Objet-Condiments.Poivre.jpeg"
+}
+,{
+"Name": "Sel",
+"Image": "Objet-Condiments.Sel.jpeg"
+}
+]
+}
+,{
+"Name": "Desserts",
+"Image": "Categorie-Desserts.jpeg",
+"Items": [
+{
+"Name": "Beurre",
+"Image": "Objet-Desserts.Beurre.jpeg"
+}
+,{
+"Name": "Chocolat",
+"Image": "Objet-Desserts.Chocolat.jpeg"
+}
+,{
+"Name": "Compote",
+"Image": "Objet-Desserts.Compote.jpeg"
+}
+,{
+"Name": "Creme dessert",
+"Image": "Objet-Desserts.CremeDessert.jpeg"
+}
+,{
+"Name": "Fromage",
+"Image": "Objet-Desserts.Fromage.jpeg"
+}
+,{
+"Name": "Fromage blanc",
+"Image": "Objet-Desserts.FromageBlanc.jpeg"
+}
+,{
+"Name": "Glace",
+"Image": "Objet-Desserts.Glace.jpeg"
+}
+,{
+"Name": "Salade de fruits",
+"Image": "Objet-Desserts.SaladeDeFruits.jpeg"
+}
+,{
+"Name": "Yaourt",
+"Image": "Objet-Desserts.Yaourt.jpeg"
+}
+]
+}
+,{
+"Name": "Fruits",
+"Image": "Categorie-Fruits.jpeg",
+"Items": [
+{
+"Name": "Abricots",
+"Image": "Objet-Fruits.Abricots.jpeg"
+}
+,{
+"Name": "Ananas",
+"Image": "Objet-Fruits.Ananas.jpeg"
+}
+,{
+"Name": "Banane",
+"Image": "Objet-Fruits.Banane.jpeg"
+}
+,{
+"Name": "Cerises",
+"Image": "Objet-Fruits.Cerises.jpeg"
+}
+,{
+"Name": "Chataigne",
+"Image": "Objet-Fruits.Chataigne.jpeg"
+}
+,{
+"Name": "Citron",
+"Image": "Objet-Fruits.Citron.jpeg"
+}
+,{
+"Name": "Figue",
+"Image": "Objet-Fruits.Figue.jpeg"
+}
+,{
+"Name": "Figue seche",
+"Image": "Objet-Fruits.FigueSeche.jpeg"
+}
+,{
+"Name": "Fraise",
+"Image": "Objet-Fruits.Fraise.jpeg"
+}
+,{
+"Name": "Framboise",
+"Image": "Objet-Fruits.Framboise.jpeg"
+}
+,{
+"Name": "Groseille",
+"Image": "Objet-Fruits.Groseille.jpeg"
+}
+,{
+"Name": "Kiwi",
+"Image": "Objet-Fruits.Kiwi.jpeg"
+}
+,{
+"Name": "Litchi",
+"Image": "Objet-Fruits.Litchi.jpeg"
+}
+,{
+"Name": "Mangue",
+"Image": "Objet-Fruits.Mangue.jpeg"
+}
+,{
+"Name": "Marrons",
+"Image": "Objet-Fruits.Marrons.jpeg"
+}
+,{
+"Name": "Myrtille",
+"Image": "Objet-Fruits.Myrtille.jpeg"
+}
+,{
+"Name": "Noisette",
+"Image": "Objet-Fruits.Noisette.jpeg"
+}
+,{
+"Name": "Noix",
+"Image": "Objet-Fruits.Noix.jpeg"
+}
+,{
+"Name": "Noix de coco",
+"Image": "Objet-Fruits.NoixDeCoco.jpeg"
+}
+,{
+"Name": "Noyau",
+"Image": "Objet-Fruits.Noyau.jpeg"
+}
+,{
+"Name": "Orange",
+"Image": "Objet-Fruits.Orange.jpeg"
+}
+,{
+"Name": "Peau de fruit",
+"Image": "Objet-Fruits.PeauDeFruit.jpeg"
+}
+,{
+"Name": "Peches",
+"Image": "Objet-Fruits.Peches.jpeg"
+}
+,{
+"Name": "Pepin",
+"Image": "Objet-Fruits.Pepin.jpeg"
+}
+,{
+"Name": "Poire",
+"Image": "Objet-Fruits.Poire.jpeg"
+}
+,{
+"Name": "Pomme",
+"Image": "Objet-Fruits.Pomme.jpeg"
+}
+,{
+"Name": "Prune",
+"Image": "Objet-Fruits.Prune.jpeg"
+}
+,{
+"Name": "Raisin",
+"Image": "Objet-Fruits.Raisin.jpeg"
+}
+]
+}
+,{
+"Name": "Legumes",
+"Image": "Categorie-Legumes.jpeg",
+"Items": [
+{
+"Name": "Ail",
+"Image": "Objet-Legumes.Ail.jpeg"
+}
+,{
+"Name": "Artichaut",
+"Image": "Objet-Legumes.Artichaut.jpeg"
+}
+,{
+"Name": "Asperge",
+"Image": "Objet-Legumes.Asperge.jpeg"
+}
+,{
+"Name": "Avocat",
+"Image": "Objet-Legumes.Avocat.jpeg"
+}
+,{
+"Name": "Betterave",
+"Image": "Objet-Legumes.Betterave.jpeg"
+}
+,{
+"Name": "Blette",
+"Image": "Objet-Legumes.Blette.jpeg"
+}
+,{
+"Name": "Brocoli",
+"Image": "Objet-Legumes.Brocoli.jpeg"
+}
+,{
+"Name": "Carotte",
+"Image": "Objet-Legumes.Carotte.jpeg"
+}
+,{
+"Name": "Celeri rave",
+"Image": "Objet-Legumes.CeleriRave.jpeg"
+}
+,{
+"Name": "Chou blanc",
+"Image": "Objet-Legumes.ChouBlanc.jpeg"
+}
+,{
+"Name": "Chou de bruxelles",
+"Image": "Objet-Legumes.ChouDeBruxelles.jpeg"
+}
+,{
+"Name": "Chou fleur",
+"Image": "Objet-Legumes.ChouFleur.jpeg"
+}
+,{
+"Name": "Chou rouge",
+"Image": "Objet-Legumes.ChouRouge.jpeg"
+}
+,{
+"Name": "Cornichon",
+"Image": "Objet-Legumes.Cornichon.jpeg"
+}
+,{
+"Name": "Courge",
+"Image": "Objet-Legumes.Courge.jpeg"
+}
+,{
+"Name": "Courgette",
+"Image": "Objet-Legumes.Courgette.jpeg"
+}
+,{
+"Name": "Echalote",
+"Image": "Objet-Legumes.Echalote.jpeg"
+}
+,{
+"Name": "Endive",
+"Image": "Objet-Legumes.Endive.jpeg"
+}
+,{
+"Name": "Epinard",
+"Image": "Objet-Legumes.Epinard.jpeg"
+}
+,{
+"Name": "Fayot",
+"Image": "Objet-Legumes.Fayot.jpeg"
+}
+,{
+"Name": "Fenouil",
+"Image": "Objet-Legumes.Fenouil.jpeg"
+}
+,{
+"Name": "Haricot vert",
+"Image": "Objet-Legumes.HaricotVert.jpeg"
+}
+,{
+"Name": "Laitue",
+"Image": "Objet-Legumes.Laitue.jpeg"
+}
+,{
+"Name": "Mais",
+"Image": "Objet-Legumes.Mais.jpeg"
+}
+,{
+"Name": "Oignon",
+"Image": "Objet-Legumes.Oignon.jpeg"
+}
+,{
+"Name": "Petits poids",
+"Image": "Objet-Legumes.PetitsPoids.jpeg"
+}
+,{
+"Name": "Poireau",
+"Image": "Objet-Legumes.Poireau.jpeg"
+}
+,{
+"Name": "Pomme de terre",
+"Image": "Objet-Legumes.PommeDeTerre.jpeg"
+}
+,{
+"Name": "Radis",
+"Image": "Objet-Legumes.Radis.jpeg"
+}
+,{
+"Name": "Salsifis",
+"Image": "Objet-Legumes.Salsifis.jpeg"
+}
+,{
+"Name": "Tomate",
+"Image": "Objet-Legumes.Tomate.jpeg"
+}
+]
+}
+,{
+"Name": "Plats prepares",
+"Image": "Categorie-PlatsPrepares.jpeg",
+"Items": [
+{
+"Name": "Couscous",
+"Image": "Objet-PlatsPrepares.Couscous.jpeg"
+}
+,{
+"Name": "Paella",
+"Image": "Objet-PlatsPrepares.Paella.jpeg"
+}
+,{
+"Name": "Pizza",
+"Image": "Objet-PlatsPrepares.Pizza.jpeg"
+}
+,{
+"Name": "Quiche",
+"Image": "Objet-PlatsPrepares.Quiche.jpeg"
+}
+,{
+"Name": "Soupe",
+"Image": "Objet-PlatsPrepares.Soupe.jpeg"
+}
+,{
+"Name": "Sushi",
+"Image": "Objet-PlatsPrepares.Sushi.jpeg"
+}
+]
+}
+,{
+"Name": "Produits d'origine animale",
+"Image": "Categorie-ProduitsDorigineAnimale.jpeg",
+"Items": [
+{
+"Name": "Fruits de mer",
+"Image": "Objet-ProduitsDorigineAnimale.FruitsDeMer.jpeg"
+}
+,{
+"Name": "Lait",
+"Image": "Objet-ProduitsDorigineAnimale.Lait.jpeg"
+}
+,{
+"Name": "Miel",
+"Image": "Objet-ProduitsDorigineAnimale.Miel.jpeg"
+}
+,{
+"Name": "Oeuf",
+"Image": "Objet-ProduitsDorigineAnimale.Oeuf.jpeg"
+}
+,{
+"Name": "Poisson",
+"Image": "Objet-ProduitsDorigineAnimale.Poisson.jpeg"
+}
+,{
+"Name": "Viande",
+"Image": "Objet-ProduitsDorigineAnimale.Viande.jpeg"
+}
+]
+}
+]}
